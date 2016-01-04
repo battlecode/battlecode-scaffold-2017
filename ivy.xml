@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<!-- This is an "ivy file". Apache Ivy is a tool for "dependency management": 
+     finding and downloading all of the things you need to build and run a
+     piece of software; in this case, battlecode. -->
+
+<ivy-module version="2.0">
+  <info module="Battlecode Player 2016" organisation="team.battlecode"/>
+
+  <!-- There are two download configurations we care about: default mode, and
+       scala mode. Default will download JUnit and Battlecode (and whatever
+       else you add to the dependencies); scala will download scala. -->
+  <configurations>
+    <conf name="default"/>
+    <conf name="scala"/>
+  </configurations>
+
+  <dependencies>
+    <!-- The main dependency we care about: battlecode, to be downloaded from
+         battlecode.org. -->
+    <dependency org="battlecode" name="battlecode" rev="2016.0.0.0"
+      conf="default"/>
+    <!-- And the battlecode javadoc, which we treat as a separate dependency
+         to work around limitations in our package repository. -->
+    <dependency org="battlecode" name="battlecode-javadoc" rev="2016.0.0.0"
+      conf="default"/>
+    <!-- And the mapeditor! -->
+    <dependency org="battlecode" name="battlecode-mapeditor" rev="2016.0.0.0"
+      conf="default"/>
+
+    <!-- Other dependencies, downloaded from the Maven Central Repository:
+         http://search.maven.org/ -->
+
+    <!-- JUnit, in case you like writing tests. -->
+    <dependency org="junit" name="junit" rev="4.12"
+      conf="default->default,javadoc"/>
+
+    <!-- Scala! -->
+    <dependency org="org.scala-lang" name="scala-library" rev="2.11.7"
+      conf="scala->default,javadoc,sources"/>
+    <dependency org="org.scala-lang" name="scala-compiler" rev="2.11.7"
+      conf="scala->default"/>
+    <dependency org="org.scala-lang" name="scala-reflect" rev="2.11.7"
+      conf="scala->default"/>
+
+  </dependencies>
+</ivy-module>

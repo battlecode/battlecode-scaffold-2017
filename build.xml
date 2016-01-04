@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<!-- The build file we use to compile and run battlecode players.
+     Uses Apache Ant: http://ant.apache.org/ -->
+
+<project name="Battlecode 2016 Scaffold" basedir="." default="run"
+  xmlns:ivy="antlib:org.apache.ivy.ant"
+  xmlns:if="ant:if"
+  xmlns:unless="ant:unless">
+
+  <description>
+    Build file for Battlecode 2016 players.
+  </description>
+
+  <!-- Ant properties are just variables. They can be injected into strings;
+       "${path.lib}" will translate to "lib", and so on. -->
+  <property name="path.lib" location="lib"/>
+  <property name="path.src" location="src"/>
+  <property name="path.test" location="test"/>
+  <property name="path.bin" location="bin"/>
+  <property name="path.bin.main" location="${path.bin}/main"/>
+  <property name="path.bin.test" location="${path.bin}/test"/>
+  <property name="path.matches" location="matches/"/>
+
+  <!-- Check if any players use scala, by counting the number of .scala files. -->
+  <condition property="bc.scala">
+    <resourcecount when="greater" count="0">
+      <fileset dir="${path.src}" includes="**/*.scala"/>
+    </resourcecount>
+  </condition>
+
+  <!-- Classpaths are lists of places to look for compiled class files. -->
+  <path id="classpath.run">
+    <fileset dir="${path.lib}" includes="*.jar"/>
+    <pathelement location="${path.bin.main}"/>
+  </path>
+  <path id="classpath.test">
+    <pathelement location="${path.bin.test}"/>
+    <path refid="classpath.run"/>
+  </path>
+
+  <!-- Now we have the "targets": tasks ant can fulfill. -->
+
+  <target name="init" description="Create temporary directories.">
+    <mkdir dir="${path.bin.main}"/>
+    <mkdir dir="${path.bin.test}"/>
+    <mkdir dir="${path.lib}"/>
+  </target>
+
+  <target name="clean" description="Clean up temporary directories.">
+    <delete dir="${path.bin}"/>
+    <delete dir="${path.matches}"/>
+  </target>
+
+  <target name="get" description="Download battlecode resources.">
+    <!-- We use a tool called Apache Ivy to download things.
+         This bit of ant magic imports everything Ivy needs. -->
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+      <classpath>
+        <fileset dir=".ivy" includes="*.jar"/>
+      </classpath>
+    </taskdef>
+
+    <!-- Now we tell ivy to download things! -->
+    <ivy:settings file=".ivy/ivysettings.xml"/>
+    <ivy:retrieve pattern="${path.lib}/[artifact]-([classifier]-)[revision].[ext]"
+      conf="default"/>
+    <ivy:retrieve pattern="${path.lib}/[artifact]-([classifier]-)[revision].[ext]"
+      conf="scala" if:set="bc.scala"/>
+  </target>
+
+  <target name="update" depends="init" description="Update to the latest version of the battlecode software.">
+    <!-- These URLs will get less horrible when we release. -->
+
+    <!-- Read the latest battlecode version from the web site. -->
+    <get src="https://www.battlecode.org/contestants/latest/"
+      dest="${java.io.tmpdir}/battlecode-version"/>
+    <loadfile srcFile="${java.io.tmpdir}/battlecode-version" property="bc.version">
+      <filterchain>
+        <striplinebreaks/>
+      </filterchain>
+    </loadfile>
+
+    <!-- Manually update ivy.xml, setting the battlecode versions to ${bc.version}. 
+         Yes, it's horrible.
+         This is necessary because of limitations in the battlecode package repository;
+         it will be cleaner next year. -->
+    <replaceregexp file="ivy.xml" flags="g">
+      <regexp pattern="name=&quot;battlecode(-javadoc|-mapeditor)?&quot;(\s+)rev=&quot;[^&quot;]+&quot;"/>
+      <substitution expression="name=&quot;battlecode\1&quot;\2rev=&quot;${bc.version}&quot;"/>
+    </replaceregexp>
+
+    <!-- Download our updated dependencies. -->
+    <antcall target="get" inheritRefs="true"/>
+    <antcall target="clean" inheritRefs="true"/>
+  </target>
+
+  <target name="build" depends="init" description="Build players.">
+    <!-- We need to import ant tasks like "scalac" to compile scala. -->
+    <taskdef resource="scala/tools/ant/antlib.xml" if:set="bc.scala">
+      <classpath>
+        <fileset dir="${path.lib}" includes="*.jar"/>
+      </classpath>
+    </taskdef>
+
+    <!-- Compile scala files. We also point scalac at java files, in case you're mixing-and-matching. -->
+    <scalac srcdir="${path.src}" destdir="${path.bin.main}" target="jvm-1.8"
+      classpathref="classpath.run" if:set="bc.scala">
+      <include name="**/*.scala"/>
+      <include name="**/*.java"/>
+    </scalac>
+
+    <!-- Compile java files, after we've compiled scala files. This should resolve circular dependencies reasonably well. Probably. -->
+    <javac srcdir="${path.src}" destdir="${path.bin.main}" source="1.8" target="1.8"
+      debug="true" includeantruntime="false" classpathref="classpath.run">
+      <compilerarg line="-Xlint"/>
+      <include name="**/*.java"/>
+    </javac>
+  </target>
+
+  <target name="build-tests" depends="build" description="Build tests.">
+    <scalac srcdir="${path.test}" destdir="${path.bin.test}" target="jvm-1.8"
+      classpathref="classpath.run" if:set="bc.scala">
+      <include name="**/*.scala"/>
+      <include name="**/*.java"/>
+    </scalac>
+
+    <javac srcdir="${path.test}" destdir="${path.bin.test}" source="1.8" target="1.8"
+      debug="true" includeantruntime="false" classpathref="classpath.test">
+      <compilerarg line="-Xlint"/>
+      <include name="**/*.java"/>
+    </javac>
+  </target>
+
+  <target name="run" depends="build" description="Run the battlecode client.">
+    <!-- Call into battlecode.client to run things. -->
+    <java classpathref="classpath.run" fork="yes" classname="battlecode.client.Main">
+      <jvmarg value="-Dapple.awt.graphics.UseQuartz=true"/>
+      <jvmarg value="-Dsun.java2d.opengl=true"/>
+      <arg line="-c bc.conf" unless:set="bc.conf"/>
+      <arg line="-c ${bc.conf}" if:set="bc.conf"/>
+    </java>
+  </target>
+  
+  <target name="headless" depends="build" description="Run the battlecode server without starting the client. Pass -Dbc.conf=[FILE] to supply your own configuration file.">
+    <!-- Call into battlecode.server to run things. -->
+    <java classpathref="classpath.run" fork="yes" classname="battlecode.server.Main">
+      <jvmarg value="-Dbc.server.mode=headless"/>
+      <arg line="-c bc.conf" unless:set="bc.conf"/>
+      <arg line="-c ${bc.conf}" if:set="bc.conf"/>
+    </java>
+  </target>
+
+  <target name="test" depends="build-tests" description="Run tests.">
+    <!-- Run JUnit for tests. -->
+    <junit printsummary="withOutAndErr" fork="true" forkmode="once">
+      <classpath refid="classpath.test"/>
+      <assertions>
+        <enable/>
+      </assertions>
+
+      <!-- We only write test output to the terminal. -->
+      <formatter type="plain" usefile="false"/>
+
+      <!-- Test all compiled files. -->
+      <batchtest>
+        <fileset dir="${path.bin.test}">
+          <include name="**/*.class"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="jar" depends="build" description="Package a player for uploading to scrimmages or tournaments.">
+    <fail unless="team">
+    Run as "ant -Dteam=name jar" where "name" is a folder in your teams folder.
+    </fail>
+    <jar destfile="${team}-submission.jar" basedir="${path.src}" includes="${team}/**/*.java,${team}/**/*.scala"/>
+  </target>
+
+  <target name="mapeditor" description="Run the map editor.">
+    <java classpathref="classpath.run" fork="yes" classname="battlecode.mapeditor.st3"/>
+  </target>
+</project>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- You're digging deep, I see.
+     This is the file where we configure ivy - tell it where to download
+     from and to.
+     See http://ant.apache.org/ivy/history/latest-milestone/settings.html -->
+
+<ivysettings>
+  <caches defaultCacheDir="${ivy.default.ivy.user.dir}/cache"/>
+
+  <resolvers>
+      <!-- The resolver we use to download battlecode dependencies. Not super advanced. -->
+    <url name='battlecode-s3'>
+      <artifact pattern="https://s3.amazonaws.com/battlecode-releases-2016/releases/[artifact]-[revision].[ext]"/>
+    </url>
+
+    <!-- The resolver we use to download everything else. -->
+    <ibiblio name='maven2' m2compatible='true'/>
+  </resolvers>
+
+  <modules>
+    <module organisation="battlecode" resolver='battlecode-s3'/>
+    <module resolver='maven2'/>
+  </modules>
+</ivysettings>
