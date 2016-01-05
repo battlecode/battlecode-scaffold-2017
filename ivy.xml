@@ -7,25 +7,23 @@
 <ivy-module version="2.0">
   <info module="Battlecode Player 2016" organisation="team.battlecode"/>
 
-  <!-- There are two download configurations we care about: default mode, and
-       scala mode. Default will download JUnit and Battlecode (and whatever
-       else you add to the dependencies); scala will download scala. -->
+  <!-- We only have a single configuration. It downloads everything you
+       could possibly need.-->
   <configurations>
     <conf name="default"/>
-    <conf name="scala"/>
   </configurations>
 
   <dependencies>
     <!-- The main dependency we care about: battlecode, to be downloaded from
          battlecode.org. -->
-    <dependency org="battlecode" name="battlecode" rev="2016.0.0.1"
+    <dependency org="battlecode" name="battlecode" rev="2016.0.0.2"
       conf="default"/>
     <!-- And the battlecode javadoc, which we treat as a separate dependency
          to work around limitations in our package repository. -->
-    <dependency org="battlecode" name="battlecode-javadoc" rev="2016.0.0.1"
+    <dependency org="battlecode" name="battlecode-javadoc" rev="2016.0.0.2"
       conf="default"/>
     <!-- And the mapeditor! -->
-    <dependency org="battlecode" name="battlecode-mapeditor" rev="2016.0.0.1"
+    <dependency org="battlecode" name="battlecode-mapeditor" rev="2016.0.0.2"
       conf="default"/>
 
     <!-- Other dependencies, downloaded from the Maven Central Repository:
@@ -33,15 +31,16 @@
 
     <!-- JUnit, in case you like writing tests. -->
     <dependency org="junit" name="junit" rev="4.12"
-      conf="default->default,javadoc"/>
+      conf="default->default,javadoc"/> <!-- "in the default configuration,
+      JUnit's default and javadoc configurations" -->
 
     <!-- Scala! -->
     <dependency org="org.scala-lang" name="scala-library" rev="2.11.7"
-      conf="scala->default,javadoc,sources"/>
+      conf="default"/>
     <dependency org="org.scala-lang" name="scala-compiler" rev="2.11.7"
-      conf="scala->default"/>
+      conf="default"/>
     <dependency org="org.scala-lang" name="scala-reflect" rev="2.11.7"
-      conf="scala->default"/>
+      conf="default"/>
 
   </dependencies>
 </ivy-module>

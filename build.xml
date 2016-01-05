@@ -24,7 +24,10 @@
   <!-- Check if any players use scala, by counting the number of .scala files. -->
   <condition property="bc.scala">
     <resourcecount when="greater" count="0">
-      <fileset dir="${path.src}" includes="**/*.scala"/>
+      <fileset dir=".">
+        <include name="${path.src}/**/*.scala"/>
+        <include name="${path.test}/**/*.scala"/>
+      </fileset>
     </resourcecount>
   </condition>
 
@@ -48,7 +51,6 @@
 
   <target name="clean" description="Clean up temporary directories.">
     <delete dir="${path.bin}"/>
-    <delete dir="${path.matches}"/>
   </target>
 
   <target name="get" description="Download battlecode resources.">
@@ -62,10 +64,8 @@
 
     <!-- Now we tell ivy to download things! -->
     <ivy:settings file=".ivy/ivysettings.xml"/>
-    <ivy:retrieve pattern="${path.lib}/[artifact]-([classifier]-)[revision].[ext]"
+    <ivy:retrieve pattern="${path.lib}/[artifact](-[classifier]).[ext]"
       conf="default"/>
-    <ivy:retrieve pattern="${path.lib}/[artifact]-([classifier]-)[revision].[ext]"
-      conf="scala" if:set="bc.scala"/>
   </target>
 
   <target name="update" depends="init" description="Update to the latest version of the battlecode software.">
@@ -175,13 +175,24 @@
   </target>
 
   <target name="jar" depends="build" description="Package a player for uploading to scrimmages or tournaments.">
-    <fail unless="team">
-    Run as "ant -Dteam=name jar" where "name" is a folder in your teams folder.
+    <fail unless:set="team">
+      Run as "ant -Dteam=name jar" where "name" is a folder in your teams folder.
     </fail>
+    <available file="${path.src}/${team}" property="team.exists"/>
+    <fail unless="team.exists">
+      You can't jar a team that doesn't exist!
+    </fail>
+    <available file="${team}-submission.jar" property="team.jar.exists"/>
+    <echo message="${team}-submission.jar already exists, deleting" if:set="team.jar.exists"/>
+    <delete file="${team}-submission.jar" if:set="team.jar.exists"/>
     <jar destfile="${team}-submission.jar" basedir="${path.src}" includes="${team}/**/*.java,${team}/**/*.scala"/>
   </target>
 
   <target name="mapeditor" description="Run the map editor.">
     <java classpathref="classpath.run" fork="yes" classname="battlecode.mapeditor.st3"/>
+  </target>
+
+  <target name="print-version" description="Print the current battlecode version">
+    <java classpathref="classpath.run" fork="yes" classname="battlecode.server.Version"/>
   </target>
 </project>

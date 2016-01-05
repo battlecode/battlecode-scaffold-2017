@@ -1,9 +1,10 @@
 *.class
 
-# Package Files
+# player jars
 *.jar
-*.war
-*.ear
+
+# keep ivy jar
+!.ivy/ivy-2.4.0.jar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -15,5 +16,8 @@ bin/
 # unneeded eclipse info
 .metadata/
 
-# match files
-*rms
+# files being edited
+*.tmp
+*.bak
+*.swp
+*~

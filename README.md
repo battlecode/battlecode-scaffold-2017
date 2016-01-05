@@ -116,6 +116,15 @@ IDE, using a terminal, or mixing and matching.
 - You're good to go; you can run other ant tasks using the other `External Tools`
   targets.
 
+#### Caveats
+
+- The Eclipse project is a slightly odd configuration, since it's not stored in
+  the base of the project. All files are *links* to `${BATTLECODE_LOC}/filename`.
+  Launch configurations have to use `${project_loc:battlecode-scaffold}/../..`,
+  since they can only access string variables.
+
+- If you rename or add jar files to the lib directory, Eclipse gets confused.
+  You'll need to re-add them using `Project / Properties / Java Build Path`.
 
 ### Using IntelliJ IDEA
 - Install IntelliJ IDEA Community Edition:
@@ -355,6 +364,31 @@ engine.
 ## Scala
 
 Most contestants choose to write their players in Java, but we also support
-Scala (or a mix of Java and Scala).  If you want to use Scala, simply add a
-scala file to any of your players, and re-run `ant update`. Everything you
-need should now be installed.
+Scala (or a mix of Java and Scala). If you want to use Scala, simply add a
+.scala file to any of your players or tests, and re-run `ant update`.
+Everything you need should now be installed.
+
+### Scala with Eclipse
+
+To run Scala with Eclipse, you'll want to install the Scala IDE Plugin for
+Eclipse: http://scala-ide.org/download/current.html
+
+Make sure you install it using `Help / Install New Software`.
+
+Things should just work, although you may have trouble running the different
+`New Scala <thing>` wizards in battlecode-scaffold, because it is not
+configured as a scala project. To fix this, just make new scala files using
+the `New / File` option, and name them whatever you want your scala files to be
+named.
+
+## Scala with IntelliJ
+
+To use Scala with IntelliJ, make sure you have the Scala plugin installed and
+enabled:
+https://plugins.jetbrains.com/plugin/?id=1347
+
+When you start editing files, it will probably yell at you about "No Scala SDK
+In Module". To fix this, click the link next to the error, and add the auto-
+configured SDK. You can also add a scala SDK in `File / Project Structure /
+Battlecode / Dependencies`; note that the resources for one should be installed
+in the `lib` folder.
