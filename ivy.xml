@@ -18,14 +18,14 @@
   <dependencies>
     <!-- The main dependency we care about: battlecode, to be downloaded from
          battlecode.org. -->
-    <dependency org="battlecode" name="battlecode" rev="2016.0.0.0"
+    <dependency org="battlecode" name="battlecode" rev="2016.0.0.1"
       conf="default"/>
     <!-- And the battlecode javadoc, which we treat as a separate dependency
          to work around limitations in our package repository. -->
-    <dependency org="battlecode" name="battlecode-javadoc" rev="2016.0.0.0"
+    <dependency org="battlecode" name="battlecode-javadoc" rev="2016.0.0.1"
       conf="default"/>
     <!-- And the mapeditor! -->
-    <dependency org="battlecode" name="battlecode-mapeditor" rev="2016.0.0.0"
+    <dependency org="battlecode" name="battlecode-mapeditor" rev="2016.0.0.1"
       conf="default"/>
 
     <!-- Other dependencies, downloaded from the Maven Central Repository:
