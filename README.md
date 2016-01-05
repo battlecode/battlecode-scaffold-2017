@@ -341,6 +341,7 @@ engine.
 
 | Key | Effect 
 |-----|--------
+|  A  | Toggle between detailed and non-detailed client view
 |  B  | Toggle unit broadcasts
 |  D  | Toggle discrete movement mode
 |  E  | Toggle HP bars
