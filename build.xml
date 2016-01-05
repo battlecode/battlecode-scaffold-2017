@@ -89,6 +89,10 @@
       <substitution expression="name=&quot;battlecode\1&quot;\2rev=&quot;${bc.version}&quot;"/>
     </replaceregexp>
 
+    <!-- Re-download all of our dependencies. -->
+    <delete dir="${path.lib}"/>
+    <mkdir dir="${path.lib}"/>
+
     <!-- Download our updated dependencies. -->
     <antcall target="get" inheritRefs="true"/>
     <antcall target="clean" inheritRefs="true"/>
