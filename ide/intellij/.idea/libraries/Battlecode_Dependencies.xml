@@ -4,7 +4,7 @@
       <root url="file://$PROJECT_DIR$/../../lib" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/../../lib/battlecode-javadoc-2016.0.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../lib/battlecode-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../../lib" />
