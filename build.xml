@@ -24,10 +24,10 @@
   <!-- Check if any players use scala, by counting the number of .scala files. -->
   <condition property="bc.scala">
     <resourcecount when="greater" count="0">
-      <fileset dir=".">
-        <include name="${path.src}/**/*.scala"/>
-        <include name="${path.test}/**/*.scala"/>
-      </fileset>
+      <union>
+        <fileset dir="${path.src}" includes="**/*.scala"/>
+        <fileset dir="${path.test}" includes="**/*.scala"/>
+      </union>
     </resourcecount>
   </condition>
 
