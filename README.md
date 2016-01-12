@@ -296,9 +296,10 @@ affect the game in this way.
 
 You should upload a zip or jar file containing your team's source code.
 
-Your player must use the package name `teamXXX` where XXX is your team number.
+First, your player must use the package name `teamXXX` where XXX is your team number.
+This means that the first line of every Java file should be in the format `package teamXXX;`.
 
-There are three ways to generate this zip or jar file:
+Next, there are four ways to generate the zip or jar file that yo ushould upload:
 
 1. You can build this jar automatically using the command `ant -Dteam=teamXXX jar`
 2. You can create a zip file of the `src/teamXXX` directory.
@@ -406,7 +407,7 @@ engine.
 |  H  | Toggle action lines
 |  I  | Rewind 50 rounds
 |  J  | Toggle slow mo
-|  L  | Toggle low supply indicators
+|  L  | Toggle infection indicators
 |  K  | Toggle attack lines
 |  R  | Show attack/sight ranges when examining a unit
 |  S  | Skip 100 rounds
