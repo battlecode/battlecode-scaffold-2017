@@ -299,7 +299,7 @@ You should upload a zip or jar file containing your team's source code.
 First, your player must use the package name `teamXXX` where XXX is your team number.
 This means that the first line of every Java file should be in the format `package teamXXX;`.
 
-Next, there are four ways to generate the zip or jar file that yo ushould upload:
+Next, there are four ways to generate the zip or jar file to upload:
 
 1. You can build this jar automatically using the command `ant -Dteam=teamXXX jar`
 2. You can create a zip file of the `src/teamXXX` directory.
