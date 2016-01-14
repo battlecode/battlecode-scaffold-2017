@@ -224,14 +224,18 @@ will show up on the top panel, such as its bytecode usage and its indicator stri
 You can also hover over a map tile to get information about its location and the number
 of parts and rubble on that tile.
 
-The left pane shows the number of units of each type. In addition, the bars represent
-the number of parts each team has.
+The left pane shows the number of units of each type. In addition, there are four bars.
+The first and third bars show how many parts each team has. The second and fourth bars
+display the total part values of the red and blue armies. This value is computed by
+summing the part cost of each team's robots and is meant to be used as an indicator of
+which team has the stronger army.
 
 Some basic animations:
 - colored lines represent attacks
 - purple rings represent broadcasts
 - circles on the map indicate parts
 - the darkness of a map tile represents how much rubble there is
+- brackets around a unit indicate infection (green = zombie, purple = viper)
 
 There are also a number of keyboard shortcuts below that you can use to play around
 with the cilent.
