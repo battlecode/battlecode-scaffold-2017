@@ -2,13 +2,13 @@
 <!-- The build file we use to compile and run battlecode players.
      Uses Apache Ant: http://ant.apache.org/ -->
 
-<project name="Battlecode 2016 Scaffold" basedir="." default="run"
+<project name="Battlecode 2017 Scaffold" basedir="." default="run"
   xmlns:ivy="antlib:org.apache.ivy.ant"
   xmlns:if="ant:if"
   xmlns:unless="ant:unless">
 
   <description>
-    Build file for Battlecode 2016 players.
+    Build file for Battlecode 2017 players.
   </description>
 
   <!-- Ant properties are just variables. They can be injected into strings;

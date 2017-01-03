@@ -10,7 +10,7 @@
   <resolvers>
       <!-- The resolver we use to download battlecode dependencies. Not super advanced. -->
     <url name='battlecode-s3'>
-      <artifact pattern="https://s3.amazonaws.com/battlecode-releases-2016/releases/[artifact]-[revision].[ext]"/>
+      <artifact pattern="https://s3.amazonaws.com/battlecode-releases-2017/releases/[artifact]-[revision].[ext]"/>
     </url>
 
     <!-- The resolver we use to download everything else. -->

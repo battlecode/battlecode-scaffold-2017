@@ -2,7 +2,7 @@ Battlecode Project Scaffold
 ===========================
 
 Here you'll find (almost) everything you need to write players for Battlecode
-2016.
+2017.
 
 Other documentation and resources can be found at: https://www.battlecode.org/
 

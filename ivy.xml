@@ -5,7 +5,7 @@
      piece of software; in this case, battlecode. -->
 
 <ivy-module version="2.0">
-  <info module="Battlecode Player 2016" organisation="team.battlecode"/>
+  <info module="Battlecode Player 2017" organisation="team.battlecode"/>
 
   <!-- We only have a single configuration. It downloads everything you
        could possibly need.-->
