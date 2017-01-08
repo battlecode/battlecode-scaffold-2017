@@ -20,19 +20,31 @@ sourceSets {
     }
 }
 
-// In this section you declare where to find the dependencies of your project
 repositories {
-    jcenter()
-
     maven {
         url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
     }
+
+    jcenter()
 }
 
 dependencies {
     compile group: 'org.battlecode', name: 'battlecode', version: '2017.0.0.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+
+// setup default config
+if (!project.hasProperty("teamA")) {
+    ext.teamA = "examplefuncsplayer"
+}
+if (!project.hasProperty("teamB")) {
+    ext.teamB = "examplefuncsplayer"
+}
+if (!project.hasProperty("maps")) {
+    ext.maps = "shrine"
 }
 
 task headless(type: JavaExec, dependsOn: ['build']) {
@@ -51,6 +63,33 @@ task headless(type: JavaExec, dependsOn: ['build']) {
     '-Dbc.game.maps='+project.property('maps'),
     '-Dbc.server.save-file=' + 'matches/' + project.property('teamA') + '-vs-' + project.property('teamB') + '-on-' + project.property('maps') + '.bc17'
   ]
+}
+
+// Handle downloading the client
+
+
+def os = System.getProperty("os.name").toLowerCase()
+def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
+                 os.startsWith('mac') ? 'battlecode-client-mac' :
+                 'battlecode-client-linux'
+
+configurations {
+    client
+}
+dependencies {
+    client group: 'org.battlecode', name: clientName, version: '2017.+'
+}
+
+// TODO test on windows while client is running
+task unpackClient(type: Copy, dependsOn: configurations.client) {
+    dependsOn configurations.client
+
+    from {
+        configurations.client.collect {
+            zipTree(it)
+        }
+    }
+    into 'client/'
 }
 
 // tell the script how to find kotlin
