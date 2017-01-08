@@ -42,7 +42,7 @@ The Battlecode software consists of three major components:
   users, the server will run transparently, so you don't have to worry about it.
   However, advanced server setups are possible, allowing you to compute matches
   on one machine and view them on another.
-    
+
 - The client: this is the software that displays Battlecode matches. For most
   users, the client will automatically create a server for running a match and
   display that match as it computes. The client also plays match files like

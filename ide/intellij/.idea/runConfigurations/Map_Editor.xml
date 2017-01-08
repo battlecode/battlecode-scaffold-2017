@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Map Editor" type="AntRunConfiguration" factoryName="Ant Target">
-    <antsettings antfile="file://$PROJECT_DIR$/../../build.xml" target="mapeditor" />
-    <method>
-      <option name="Make" enabled="false" />
-    </method>
-  </configuration>
-</component>

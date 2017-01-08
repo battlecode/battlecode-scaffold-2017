@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Jar Player (set team: View / Tool Windows / Ant Build / Battlecode 2016 Scaffold / Properties / Execution)" type="AntRunConfiguration" factoryName="Ant Target">
-    <antsettings antfile="file://$PROJECT_DIR$/../../build.xml" target="jar" />
-    <method>
-      <option name="Make" enabled="false" />
-    </method>
-  </configuration>
-</component>
