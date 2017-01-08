@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Battlecode Headless" type="AntRunConfiguration" factoryName="Ant Target">
-    <antsettings antfile="file://$PROJECT_DIR$/../../build.xml" target="headless" />
-    <method>
-      <option name="Make" enabled="false" />
-    </method>
-  </configuration>
-</component>
