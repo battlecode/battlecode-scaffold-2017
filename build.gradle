@@ -109,7 +109,7 @@ task listPlayers {
             String fn = it.toString()
             if (fn.endsWith('/RobotPlayer.java')) {
                 int endPos = fn.lastIndexOf('/')
-                int startPos = fn.lastIndexOf('/', endPos-1) + 1
+                int startPos = fn.indexOf('/src/') + 5
                 println fn.substring(startPos, endPos)
             }
         }
@@ -119,16 +119,18 @@ task listPlayers {
 task listMaps {
     description 'Lists all available maps.'
 
-    sourceSets.main.compileClasspath.each {
-        if (it.toString().contains('battlecode-2017')) {
-            FileCollection fc = zipTree(it)
-            fc += fileTree(dir: 'matches')
-            fc.each {
-                String fn = it.toString()
-                if (fn.endsWith('.map17')) {
-                    int startPos = fn.lastIndexOf('/') + 1
-                    int endPos = fn.lastIndexOf('.')
-                    println fn.substring(startPos, endPos)
+    doLast {
+        sourceSets.main.compileClasspath.each {
+            if (it.toString().contains('battlecode-2017')) {
+                FileCollection fc = zipTree(it)
+                fc += fileTree(dir: 'matches')
+                fc.each {
+                    String fn = it.toString()
+                    if (fn.endsWith('.map17')) {
+                        int startPos = fn.lastIndexOf('/') + 1
+                        int endPos = fn.lastIndexOf('.')
+                        println fn.substring(startPos, endPos)
+                    }
                 }
             }
         }
