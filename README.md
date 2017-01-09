@@ -103,7 +103,7 @@ IDE, using a terminal, or mixing and matching.
 
 - Open `Window / Show View / Other...`. Select `Gradle / Gradle Tasks`.
 
-- You should now see a list of available Gradle tasks somewhere in the IDE. Open the `battlecode` group, and double-click `unpackClient`.
+- You should now see a list of available Gradle tasks somewhere in the IDE. Open the `battlecode` group, and double-click `build`. This will run tests to verify that everything is working correctly
 
 - You're good to go; you can run other Gradle tasks using the other options in the "Gradle Tasks" menu. Note that you shouldn't need any task not in the `battlecode` group.
 
@@ -145,7 +145,7 @@ IDE, using a terminal, or mixing and matching.
 - On every system you will need to set the `JAVA_HOME` environment variable to
   point to the installation path of your JDK.
 
-- Navigate to the root directory of the project, and run `gradle unpackClient`.
+- Navigate to the root directory of the project, and run `gradle build`. This will run tests, to verify that everything is working.
 
 - You're good to go. Run `gradle -q tasks` to see the other Gradle build
   tasks available. You shouldn't need to use any tasks outside of the "battlecode" group.
@@ -258,31 +258,4 @@ We recommend using the map editor to create maps. The map editor can be ran from
 ## Scala
 
 Most contestants choose to write their players in Java, but we also support
-Scala (or a mix of Java and Scala). If you want to use Scala, simply add a
-.scala file to any of your players or tests, and re-run `ant update`.
-Everything you need should now be installed.
-
-### Scala with Eclipse
-
-To run Scala with Eclipse, you'll want to install the Scala IDE Plugin for
-Eclipse: http://scala-ide.org/download/current.html
-
-Make sure you install it using `Help / Install New Software`.
-
-Things should just work, although you may have trouble running the different
-`New Scala <thing>` wizards in battlecode-scaffold, because it is not
-configured as a scala project. To fix this, just make new scala files using
-the `New / File` option, and name them whatever you want your scala files to be
-named.
-
-## Scala with IntelliJ
-
-To use Scala with IntelliJ, make sure you have the Scala plugin installed and
-enabled:
-https://plugins.jetbrains.com/plugin/?id=1347
-
-When you start editing files, it will probably yell at you about "No Scala SDK
-In Module". To fix this, click the link next to the error, and add the auto-
-configured SDK. You can also add a scala SDK in `File / Project Structure /
-Battlecode / Dependencies`; note that the resources for one should be installed
-in the `lib` folder.
+Scala (or a mix of Java and Scala) out of the box, with the standard install.
