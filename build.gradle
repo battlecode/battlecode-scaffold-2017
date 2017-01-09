@@ -125,7 +125,7 @@ task listPlayers {
                 URI base = new File(project.projectDir, 'src').toURI()
                 URI full = it.toURI()
                 String path = base.relativize(full).toString()
-                println path.substring(0, path.lastIndexOf('/')).replaceAll('/', '.')
+                println 'PLAYER: '+path.substring(0, path.lastIndexOf('/')).replaceAll('/', '.')
             }
         }
     }
@@ -145,7 +145,7 @@ task listMaps {
                 fc.each {
                     String fn = it.getName()
                     if (fn.endsWith('.map17')) {
-                        println fn.substring(0, fn.indexOf('.map17')
+                        println 'MAP: '+fn.substring(0, fn.indexOf('.map17'))
                     }
                 }
             }
