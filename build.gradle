@@ -168,3 +168,14 @@ task listMaps {
         }
     }
 }
+
+// This task prepares player code for upload, assembling it into a Java archive.
+// This archive can be uploaded at `www.battlecode.org`.
+task jarForUpload(type: Jar) {
+    description 'Assembles source code into an archive, ready to be uploaded to the Battlecode site.'
+    group 'battlecode'
+
+    from sourceSets.main.scala.srcDirs
+    destinationDir = project.projectDir
+    archiveName = 'battlecode-player-upload.jar'
+}
