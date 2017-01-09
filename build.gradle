@@ -106,11 +106,11 @@ task listPlayers {
 
     doLast {
         sourceSets.main.allJava.each {
-            String fn = it.toString()
-            if (fn.endsWith('/RobotPlayer.java')) {
-                int endPos = fn.lastIndexOf('/')
-                int startPos = fn.indexOf('/src/') + 5
-                println fn.substring(startPos, endPos)
+            if (it.toString().endsWith('/RobotPlayer.java')) {
+                URI base = new File(project.projectDir, 'src').toURI()
+                URI full = it.toURI()
+                String path = base.relativize(full).toString()
+                println path.substring(0, path.lastIndexOf('/')).replaceAll('/', '.')
             }
         }
     }
