@@ -2,11 +2,13 @@
 // We're using Gradle: https://gradle.org/
 
 // Gradle's plugins allow it to automatically generate build scripts
-// for different types of code. Here we apply the 'java' plugin, which provide
+// for different types of code. Here we apply the Java plugin, which provide
 // all the tools needed to build player code!
 apply plugin: 'java'
+
+// The Scala plugin expands upon the Java plugin, allowing us to compile
+// Scala source files.
 apply plugin: 'scala'
-//apply plugin: 'kotlin'
 
 // These plugins allow for this build script to be compatible with IDEs.
 apply plugin: 'idea'
