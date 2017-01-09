@@ -15,18 +15,22 @@ Other documentation and resources can be found at: https://www.battlecode.org/
     This file.
 - `build.gradle`
     The Gradle build file used to build and run players.
-- `bc.conf`
-    The battlecode configuration file containing user settings.
 - `src/`
-    Player source code
+    Player source code.
 - `test/`
-    Player test code
-- `lib/`
-    Dependencies directory
-- `bin/`
-    The output directory for builds; can be safely ignored
-- `.ivy/`
-    An extra directory containing ivy resources; can be safely ignored
+    Player test code.
+- `client/`
+    Contains the client.
+- `build/`
+    Contains compiled player code and other artifacts of the build process. Can be safely ignored.
+- `matches/`
+    The output folder for match files.
+- `maps/`
+    The default folder for custom maps.
+- `gradlew`, `gradlew.bat`
+    The Unix (OS X/Linux) and Windows versions, respectively, of the Gradle wrapper. These are nifty scripts that you can execute in a terminal to run the Gradle build tasks of this project. If you aren't planning to do command line development, these can be safely ignored.
+- `gradle/`
+    Contains files used by the Gradle wrapper scripts. Can be safely ignored.
 
 
 ### How does Battlecode work?
@@ -46,33 +50,19 @@ The Battlecode software consists of three major components:
   display that match as it computes. The client also plays match files like
   those from scrimmage matches and the tournaments.
 
-This project scaffold handles installing and running these components using Ant
-and Ivy.
+This project scaffold handles installing and running these components using Gradle.
 
 
-### What is Ant?
+### What is Gradle?
 
-Apache Ant is a Java-based build system similar in theory to UNIX `make`.
+Gradle is a build system that expands upon the features of earlier build systems like Apache Ant and Apache Maven, utilizing a domain-specific language based off of Groovy, a JVM language.
 
 You can run it from a terminal or from an IDE; instructions are below.
 
-You can find Ant's documentation at: http://ant.apache.org/
+You can find Ant's documentation at: https://gradle.org/
 
-You are not required to use the Ant build script, but you should probably at
+You are not required to use the Gradle build script, but you should probably at
 least read it to get an idea of how things work.
-
-
-### What is Ivy?
-
-Apache Ivy is a "dependency manager" that integrates well with Ant. It handles
-finding and downloading "dependencies": resources that a project needs to build
-and run.
-
-The Ant build file handles loading and invoking Ivy; you shouldn't have to
-concern yourself with it, unless you want to add more dependencies for some
-reason.
-
-You can find Ivy's documentation at: http://ant.apache.org/ivy/
 
 
 ## Getting started
