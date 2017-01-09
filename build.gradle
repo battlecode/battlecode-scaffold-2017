@@ -176,7 +176,7 @@ task listMaps {
         sourceSets.main.compileClasspath.each {
             if (it.toString().contains('battlecode-2017')) {
                 FileCollection fc = zipTree(it)
-                fc += fileTree(dir: 'matches')
+                fc += fileTree(dir: 'maps')
                 fc.each {
                     String fn = it.getName()
                     if (fn.endsWith('.map17')) {
