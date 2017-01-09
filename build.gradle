@@ -14,6 +14,9 @@ apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
+// Extra tools from battlecode.
+apply plugin: 'battlecode'
+
 sourceCompatibility = 1.8
 
 // We override Gradle's defaults for project directory layout.
@@ -53,10 +56,10 @@ def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
 // The dependencies of this project.
 dependencies {
     // The Battlecode engine.
-    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
+    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+', changing: true
 
     // The Battlecode client.
-    client group: 'org.battlecode', name: clientName, version: '2017.+'
+    client group: 'org.battlecode', name: clientName, version: '2017.+', changing: true
 
     // Scala!
     compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
@@ -64,7 +67,7 @@ dependencies {
     compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
 }
 
-// Eclipse specifc setup to enable docs and sources, and configure layout.
+// Eclipse specific setup to enable docs and sources, and configure layout.
 eclipse {
     classpath {
         downloadJavadoc = true
@@ -148,7 +151,7 @@ task listPlayers {
 }
 
 // This task prints out all available maps, in the format that the `run` task
-// expects them to be given as
+// expects them to be given as.
 task listMaps {
     description 'Lists all available maps.'
     group 'battlecode'
@@ -178,4 +181,29 @@ task jarForUpload(type: Jar) {
     from sourceSets.main.scala.srcDirs
     destinationDir = project.projectDir
     archiveName = 'battlecode-player-upload.jar'
+}
+
+// Battlecode updates a lot.
+// We should make sure to check for new dependencies frequently.
+configurations.all {
+    // Check for updates every build.
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+
+// We need to download the battlecode plugin before we can run the build script; this does that.
+buildscript {
+    repositories {
+        maven {
+            url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
+        }
+    }
+    dependencies {
+        // Load the battlecode plugin onto the classpath.
+        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+', changing: true
+    }
+    configurations.all {
+        // Check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
 }
