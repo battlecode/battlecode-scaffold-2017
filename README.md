@@ -103,7 +103,7 @@ IDE, using a terminal, or mixing and matching.
 
 - Open `Window / Show View / Other...`. Select `Gradle / Gradle Tasks`.
 
-- You should now see a list of available Gradle tasks somewhere in the IDE. Open the `battlecode` group, and double-click `unpackClient`.
+- You should now see a list of available Gradle tasks somewhere in the IDE. Open the `battlecode` group, and double-click `build`. This will run tests to verify that everything is working correctly
 
 - You're good to go; you can run other Gradle tasks using the other options in the "Gradle Tasks" menu. Note that you shouldn't need any task not in the `battlecode` group.
 
@@ -145,7 +145,7 @@ IDE, using a terminal, or mixing and matching.
 - On every system you will need to set the `JAVA_HOME` environment variable to
   point to the installation path of your JDK.
 
-- Navigate to the root directory of the project, and run `gradle unpackClient`.
+- Navigate to the root directory of the project, and run `gradle build`. This will run tests, to verify that everything is working.
 
 - You're good to go. Run `gradle -q tasks` to see the other Gradle build
   tasks available. You shouldn't need to use any tasks outside of the "battlecode" group.
@@ -196,7 +196,6 @@ This task takes several paramters: `teamA`, `teamB`, and `maps`. These can be sp
 
 `teamA` and `teamB` correspond to the packages containing teams A and B, respectively. `maps` should be set to a comma-separated list of maps. If you are unsure as to what format to use for entering, refer to the output of `gradle listMaps listPlayers`.
 
-
 ## Debugging your Player
 
 Normally, the software computes the match well ahead of what is being currently
@@ -222,160 +221,26 @@ affect the game in this way.
 
 ## Uploading your Player
 
-You should upload a zip or jar file containing your team's source code.
+You should upload a jar file containing your team's source code.
 
-First, your player must use the package name `teamXXX` where XXX is your team number.
-This means that the first line of every Java file should be in the format `package teamXXX;`.
+This year, there are no restrictions on the package your player's code may be placed in; only that your `run(RobotController rc)` method be in a file named `RobotPlayer.java`. (or `RobotPlayer.scala`!)
 
-Next, there are four ways to generate the zip or jar file to upload:
+To build this jar, run the gradle task `jarForUpload`. This can be done from an IDE, or from the command line.
 
-1. You can build this jar automatically using the command `ant -Dteam=teamXXX jar`
-2. You can create a zip file of the `src/teamXXX` directory.
-3. With Eclipse, run the `Jar Team for Upload` (dropdown under play button with toolbox)
-and for the label, make sure to pick `teamXXX` where XXX is your team number.
-4. With IntelliJ, run `Jar Player`. You first have to set your team with `Views /
-Tool Windows / Ant Build / Battlecode 2016 Scaffold / Properties / Execution`).
-
-Then, go to http://www.battlecode.org/contestants/upload/ and upload this file.
-The website will attempt to compile your program and if it succeeds, then you can
-go challenge other teams to scrimmages.
+Then, go to http://www.battlecode.org/contestants/upload/ and upload this file. The website will attempt to compile your program and if it succeeds, then you can go challenge other teams to scrimmages.
 
 ## Maps
 
-This year, the map files (the XML map files) are packaged into the battlecode jar.
+This year, the map files are packaged into the battlecode jar.
 You can access the map files at
 https://github.com/battlecode/battlecode-server/tree/master/src/main/battlecode/world/resources
 if you are curious. In addition, you can write your own maps and place them in
 the `maps` folder. Any maps placed there will be discovered by the client. For more help
 about how to write your own map files, check the specs.
 
-We recommend using the map editor to create maps. To run the map editor, use `ant mapeditor`
-or run `Map Editor`. This will open up a map editor. There are video lecture tutorials on
-how to use the map editor. The map editor at the moment does not allow you to specify
-the zombie spawn schedule, so you will have to insert that yourself into the XML file
-after the XML file has been created.
-
-## Advanced Configuration
-
-The Battlecode distribution includes a configuration file, `bc.conf`, that
-allows you to tweak some of the software's settings. Appendix A contains a
-listing of configurable properties.
-
-The properties can also be set in any way that Java properties are set. This
-includes using `-D[property]=[value]` on the `java` or `ant` command line.
-
-
-## Appendix A: Configuration Properties and Command-line Arguments
-
-### Computation Throttling
-
-When running a local match, the game engine attempts to periodically delay to
-prevent starving the match viewer of CPU time. Altering the following two
-settings may yield better local match performance:
-
-- `bc.server.throttle`: determines how to delay match computation; can be set to
-   either "yield" or "sleep"
-- `bc.server.throttle-count`: the number of rounds between sleep/yield
-
-
-### Engine Settings
-
-The following settings can be used to enable or disable certain aspects of the
-engine.
-
-- `bc.engine.silence-a` and `bc.engine.silence-b`: "true" or "false"; whether or
-   not the engine will suppress printouts for the appropriate team
-- `bc.engine.gc`: "true" or "false"; whether or not to periodically force
-   garbage collection in the game engine -- this option causes decreased
-   performance but may help if the virtual machine runs out of memory during
-   computation
-- `bc.engine.gc-rounds`: how many rounds between forced invocation of the
-   garbage collector; the default is 50
-- `bc.engine.upkeep`: "true" or "false"; if "false", the engine will not charge
-   units their energon upkeep each round
-- `bc.engine.breakpoints`: "true" or "false"; if "false", the engine will skip
-   breakpoints in player code
-
-
-### Client Settings
-- `bc.game.renderprefs2d`: preferences for the 2d client.  For example, if
-   you wanted to turn off the rendering of broadcasts and gridlines, you could
-   set this property to "bg".  See the "Shortcut Keys" section for a complete
-   listing of toggles.
-
-
-### Miscellaneous Settings
-
-- `bc.game.map-path`: the folder in which to look for map files (aside from the
-   ones packaged into the battlecode software)
-- `bc.dialog.skip`: "true" or "false"; whether or not to show the setup dialog
-   when the software is started. If "true", the parameters most recently entered
-   into the dialog will be used.
-
-
-### Client Settings
-
-- `bc.client.renderprefs2d`: A list of toggles to set in the 2D client.
-   (See Shortcut Keys below.)  For example, if you want to turn off broadcasts,
-   grid lines, and transfers, you would set `bc.client.renderprefs2d=bgt`.
-- `bc.client.sound-on`: "true" or "false"; whether or not to play sound
-   effects.
-
-
-### Shortcut Keys
-
-| Key | Effect 
-|-----|--------
-|  A  | Toggle between detailed and non-detailed client view
-|  B  | Toggle unit broadcasts
-|  D  | Toggle discrete movement mode
-|  E  | Toggle HP bars
-|  F  | Toggle fast forward
-|  G  | Toggle grid lines
-|  H  | Toggle action lines
-|  I  | Rewind 50 rounds
-|  J  | Toggle slow mo
-|  L  | Toggle infection indicators
-|  K  | Toggle attack lines
-|  R  | Show attack/sight ranges when examining a unit
-|  S  | Skip 100 rounds
-|  U  | Toggle parts
-|  V  | Toggle indicator dot/line display (none, one team, both teams)
-|  X  | Toggle unit explosions
-|  /  | Find unit by ID
-|  <  | Pause
-|  >  | Pause
-| Esc | Quit
-
+We recommend using the map editor to create maps. The map editor can be ran from the client. Instructions can be found within the client.
 
 ## Scala
 
 Most contestants choose to write their players in Java, but we also support
-Scala (or a mix of Java and Scala). If you want to use Scala, simply add a
-.scala file to any of your players or tests, and re-run `ant update`.
-Everything you need should now be installed.
-
-### Scala with Eclipse
-
-To run Scala with Eclipse, you'll want to install the Scala IDE Plugin for
-Eclipse: http://scala-ide.org/download/current.html
-
-Make sure you install it using `Help / Install New Software`.
-
-Things should just work, although you may have trouble running the different
-`New Scala <thing>` wizards in battlecode-scaffold, because it is not
-configured as a scala project. To fix this, just make new scala files using
-the `New / File` option, and name them whatever you want your scala files to be
-named.
-
-## Scala with IntelliJ
-
-To use Scala with IntelliJ, make sure you have the Scala plugin installed and
-enabled:
-https://plugins.jetbrains.com/plugin/?id=1347
-
-When you start editing files, it will probably yell at you about "No Scala SDK
-In Module". To fix this, click the link next to the error, and add the auto-
-configured SDK. You can also add a scala SDK in `File / Project Structure /
-Battlecode / Dependencies`; note that the resources for one should be installed
-in the `lib` folder.
+Scala (or a mix of Java and Scala) out of the box, with the standard install.

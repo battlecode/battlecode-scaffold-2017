@@ -37,7 +37,7 @@ sourceSets {
 repositories {
     // Let Gradle know about our own repository for hosting Battlecode.
     maven {
-        url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
+        url "http://battlecode-maven.s3-website-us-east-1.amazonaws.com/"
     }
 
     // Use the JCenter repo to resolve Scala dependencies.
@@ -115,6 +115,7 @@ task unpackClient(type: Copy, dependsOn: configurations.client) {
     into 'client/'
 }
 
+build.group = 'battlecode'
 build.dependsOn('unpackClient')
 
 // Another task. This one accepts three optional parameters, or "properties",
@@ -176,7 +177,7 @@ task listMaps {
         sourceSets.main.compileClasspath.each {
             if (it.toString().contains('battlecode-2017')) {
                 FileCollection fc = zipTree(it)
-                fc += fileTree(dir: 'maps')
+                fc += fileTree(new File(project.projectDir, 'maps'))
                 fc.each {
                     String fn = it.getName()
                     if (fn.endsWith('.map17')) {
