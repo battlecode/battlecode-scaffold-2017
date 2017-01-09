@@ -131,8 +131,9 @@ task listPlayers {
     group 'battlecode'
 
     doLast {
-        sourceSets.main.allJava.each {
-            if (it.getName().equals('RobotPlayer.java')) {
+        (sourceSets.main.allJava + sourceSets.main.allScala).each {
+            if (it.getName().equals('RobotPlayer.java')
+                || it.getName().equals('RobotPlayer.scala')) {
                 URI base = new File(project.projectDir, 'src').toURI()
                 URI full = it.toURI()
                 String path = base.relativize(full).toString()
