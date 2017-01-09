@@ -13,10 +13,8 @@ Other documentation and resources can be found at: https://www.battlecode.org/
 
 - `README.md`
     This file.
-- `build.xml`
-    The Ant build file used to build and run players.
-- `ivy.xml`
-    The Ivy file used to find and download dependencies
+- `build.gradle`
+    The Gradle build file used to build and run players.
 - `bc.conf`
     The battlecode configuration file containing user settings.
 - `src/`
