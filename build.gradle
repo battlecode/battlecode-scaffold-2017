@@ -58,10 +58,10 @@ def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
 // The dependencies of this project.
 dependencies {
     // The Battlecode engine.
-    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+', changing: true
+    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
 
     // The Battlecode client.
-    client group: 'org.battlecode', name: clientName, version: '2017.+', changing: true
+    client group: 'org.battlecode', name: clientName, version: '2017.+'
 
     // Scala!
     compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
@@ -203,7 +203,7 @@ task jarForUpload(type: Jar) {
 // We should make sure to check for new dependencies frequently.
 configurations.all {
     // Check for updates every build.
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 3600, 'seconds'
 }
 
 
@@ -216,10 +216,10 @@ buildscript {
     }
     dependencies {
         // Load the battlecode plugin onto the classpath.
-        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+', changing: true
+        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+'
     }
     configurations.all {
-        // Check for updates every build
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        // Check for updates every build.
+        resolutionStrategy.cacheDynamicVersionsFor 3600, 'seconds'
     }
 }

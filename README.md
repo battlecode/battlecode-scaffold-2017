@@ -48,7 +48,9 @@ The Battlecode software consists of three major components:
 - The client: this is the software that displays Battlecode matches. For most
   users, the client will automatically create a server for running a match and
   display that match as it computes. The client also plays match files like
-  those from scrimmage matches and the tournaments.
+  those from scrimmage matches and the tournaments. Finally, the client also
+  contains a map editor, for those who would like to create their own maps
+  to test their robots on.
 
 This project scaffold handles installing and running these components using Gradle.
 
@@ -93,7 +95,7 @@ IDE, using a terminal, or mixing and matching.
   http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
 
 - Create a new Eclipse workspace. The workspace should NOT contain the
-  battlecode-scaffold folder.
+  `battlecode-scaffold-2017` folder.
 
 - Run `File -> Import...`, and select `Gradle / Gradle Project`.
 
@@ -138,7 +140,7 @@ IDE, using a terminal, or mixing and matching.
 
 - If using the former option, simply start every Gradle command with `gradle`.
 
-- If opting to use the wrapper, start every Gradle command with `./gradlew`, if using Unix, or `gradlew.bat`, if using Windows.
+- If opting to use the wrapper, start every Gradle command with `./gradlew`, if using Unix, or `gradlew`, if using Windows.
 
 - On every system you will need to set the `JAVA_HOME` environment variable to
   point to the installation path of your JDK.
@@ -150,24 +152,17 @@ IDE, using a terminal, or mixing and matching.
 
 
 ## Writing Players
-//TODO: update this section
+
 The included `build.gradle` file allows you to compile your player and prepare it
 for submission without having to worry about the Java classpath and other
 settings. To take advantage of this, simply place the source code for your
 player(s) in a subdirectory of `src` folder in your Battlecode installation
 directory.
 
-For instance, if you are team #1, you'd have a folder called `team001` in your
-`src` folder, and in `team001` you'd have `RobotPlayer.java` (with package
-`team001`), etc.
-
-You can also have other folders, if you want to work on multiple players at once.
-However, only the `teamXXX` player can be submitted for your team.
-
-Building after running this might help resolve issues with version changes.
+This year, you can store your code in packages as you like; the only restriction is that your `run(RobotController rc)` method must be placed in a file called `RobotPlayer.java`. (or `RobotPlayer.scala`!)
 
 ## Running Matches
-//TODO: update this section
+
 ### Local
 
 Local matches are the most common way to run a match - they are computed and
