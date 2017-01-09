@@ -88,6 +88,10 @@ Pay careful attention to anything about setting up your `PATH` or `CLASSPATH`.
 Next, you'll need to choose how you want to work on battlecode - using an
 IDE, using a terminal, or mixing and matching.
 
+## Important note for Windows users
+
+If you get errors while trying to execute Gradle tasks, make sure that you do not have the client open.
+
 
 ### Using Eclipse
 
