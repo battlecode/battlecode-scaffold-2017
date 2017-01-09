@@ -2,11 +2,13 @@
 // We're using Gradle: https://gradle.org/
 
 // Gradle's plugins allow it to automatically generate build scripts
-// for different types of code. Here we apply the 'java' plugin, which provide
+// for different types of code. Here we apply the Java plugin, which provides
 // all the tools needed to build player code!
 apply plugin: 'java'
-//apply plugin: 'scala'
-//apply plugin: 'kotlin'
+
+// The Scala plugin expands upon the Java plugin, allowing us to compile
+// Scala source files.
+apply plugin: 'scala'
 
 // These plugins allow for this build script to be compatible with IDEs.
 apply plugin: 'idea'
@@ -17,12 +19,12 @@ sourceCompatibility = 1.8
 // We override Gradle's defaults for project directory layout.
 sourceSets {
     main {
-        java.srcDirs = ["src"]
+        scala.srcDirs = ["src"]
         output.classesDir = "$buildDir/src"
     }
 
     test {
-        java.srcDirs = ["test"]
+        scala.srcDirs = ["test"]
         output.classesDir = "$buildDir/tests"
     }
 }
@@ -32,6 +34,9 @@ repositories {
     maven {
         url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
     }
+
+    // Use the JCenter repo to resolve Scala dependencies.
+    jcenter()
 }
 
 // Mark the client as a special dependency, so that we can handle it separately.
@@ -45,10 +50,18 @@ def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
                  os.startsWith('mac') ? 'battlecode-client-mac' :
                  'battlecode-client-linux'
 
-// Tell Gradle to download the game and client.
+// The dependencies of this project.
 dependencies {
+    // The Battlecode engine.
     compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
+
+    // The Battlecode client.
     client group: 'org.battlecode', name: clientName, version: '2017.+'
+
+    // Scala!
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
+    compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.7'
+    compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
 }
 
 // Eclipse specifc setup to enable docs and sources.
@@ -120,8 +133,9 @@ task listPlayers {
     group 'battlecode'
 
     doLast {
-        sourceSets.main.allJava.each {
-            if (it.getName().equals('RobotPlayer.java')) {
+        (sourceSets.main.allJava + sourceSets.main.allScala).each {
+            if (it.getName().equals('RobotPlayer.java')
+                || it.getName().equals('RobotPlayer.scala')) {
                 URI base = new File(project.projectDir, 'src').toURI()
                 URI full = it.toURI()
                 String path = base.relativize(full).toString()
