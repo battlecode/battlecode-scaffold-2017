@@ -34,7 +34,11 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-
+eclipse {
+    classpath {
+        downloadJavadoc = true
+    }
+}
 
 // setup default config
 if (!project.hasProperty("teamA")) {
@@ -48,21 +52,23 @@ if (!project.hasProperty("maps")) {
 }
 
 task headless(type: JavaExec, dependsOn: ['build']) {
-  main = 'battlecode.server.Main'
-  classpath = sourceSets.main.runtimeClasspath
-  args = ['-c=-']
-  jvmArgs = [
-    '-Dbc.server.mode=headless',
-    '-Dbc.server.map-path=maps',
-    '-Dbc.server.debug=true',
-    '-Dbc.engine.debug-methods=true',
-    '-Dbc.game.team-a='+project.property('teamA'),
-    '-Dbc.game.team-b='+project.property('teamB'),
-    '-Dbc.game.team-a.url='+sourceSets.main.output.classesDir,
-    '-Dbc.game.team-b.url='+sourceSets.main.output.classesDir,
-    '-Dbc.game.maps='+project.property('maps'),
-    '-Dbc.server.save-file=' + 'matches/' + project.property('teamA') + '-vs-' + project.property('teamB') + '-on-' + project.property('maps') + '.bc17'
-  ]
+    description 'Runs a match without starting the client.'
+
+    main = 'battlecode.server.Main'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-c=-']
+    jvmArgs = [
+        '-Dbc.server.mode=headless',
+        '-Dbc.server.map-path=maps',
+        '-Dbc.server.debug=true',
+        '-Dbc.engine.debug-methods=true',
+        '-Dbc.game.team-a='+project.property('teamA'),
+        '-Dbc.game.team-b='+project.property('teamB'),
+        '-Dbc.game.team-a.url='+sourceSets.main.output.classesDir,
+        '-Dbc.game.team-b.url='+sourceSets.main.output.classesDir,
+        '-Dbc.game.maps='+project.property('maps'),
+        '-Dbc.server.save-file=' + 'matches/' + project.property('teamA') + '-vs-' + project.property('teamB') + '-on-' + project.property('maps') + '.bc17'
+    ]
 }
 
 // Handle downloading the client
@@ -76,12 +82,15 @@ def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
 configurations {
     client
 }
+
 dependencies {
     client group: 'org.battlecode', name: clientName, version: '2017.+'
 }
 
 // TODO test on windows while client is running
 task unpackClient(type: Copy, dependsOn: configurations.client) {
+    description 'Downloads the client.'
+
     dependsOn configurations.client
 
     from {
@@ -91,15 +100,3 @@ task unpackClient(type: Copy, dependsOn: configurations.client) {
     }
     into 'client/'
 }
-
-// tell the script how to find kotlin
-//buildscript {
-//   ext.kotlin_version = '<version to use>'
-//   repositories {
-//     mavenCentral()
-//   }
-//   dependencies {
-//     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-//   }
-//}
-
