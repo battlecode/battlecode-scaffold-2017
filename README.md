@@ -202,28 +202,6 @@ This task takes several paramters: `teamA`, `teamB`, and `maps`. These can be sp
 
 `teamA` and `teamB` correspond to the packages containing teams A and B, respectively. `maps` should be set to a comma-separated list of maps. If you are unsure as to what format to use for entering, refer to the output of `gradle listMaps listPlayers`.
 
-## Debugging your Player
-
-Normally, the software computes the match well ahead of what is being currently
-viewed. However, selecting "compute and view match synchronously" from the match
-dialog puts the software in "lockstep mode", where the computation and viewing
-move in lockstep. This is generally slower than running them independently, but
-it allows for some interesting debugging features.
-
-While in lockstep mode, right-clicking on an open square in the map brings up a
-menu that lets you add new units to the map. Right-clicking on an existing unit
-allows you to set its control bits, which the robot's player can query and react
-to. You can also drag-and-drop units on the map.
-
-These debugging features are intended to help you test your robots in situations
-that might otherwise be hard to get them into (e.g., what happens if one of my
-archons gets cut off from the rest...?). However, if the players are not written
-defensively, these unexpected manual changes can interfere with their control
-logic. Keep this in mind when using the debugging features.
-
-Also, during the tournament and scrimmages, you will not be able to manually
-affect the game in this way.
-
 
 ## Uploading your Player
 
