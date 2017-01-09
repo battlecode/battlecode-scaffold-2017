@@ -20,7 +20,7 @@ sourceCompatibility = 1.8
 sourceSets {
     main {
         scala.srcDirs = ["src"]
-        output.classesDir = "$buildDir/src"
+        output.classesDir = "$buildDir/classes"
     }
 
     test {
@@ -64,11 +64,13 @@ dependencies {
     compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
 }
 
-// Eclipse specifc setup to enable docs and sources.
+// Eclipse specifc setup to enable docs and sources, and configure layout.
 eclipse {
     classpath {
         downloadJavadoc = true
         downloadSources = true
+
+        defaultOutputDir = new File(project.buildDir, 'classes-eclipse')
     }
 }
 
