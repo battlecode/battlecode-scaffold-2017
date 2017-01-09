@@ -167,51 +167,27 @@ This year, you can store your code in packages as you like; the only restriction
 
 ### Local
 
-Local matches are the most common way to run a match - they are computed and
-rendered simultaneously on the same machine. Invoke the ant `run` target to run
-a local match, using the command line or an IDE. For the IDE, pick `Battlecode
-Client` the same way you picked `Update Battlecode`.
-
-A dialog box will appear that allows you to choose the teams and maps to run.
-The teams and maps that appear in the dropdown boxes are those that the software
-knows about at runtime. If the team or map you're trying to run does not appear
-in the dropdown box, it isn't on your classpath or map path.
-
-When running a local match, you also have the option of saving the match to a
-file so that you can play it back without having to recompute it. To do this,
-check the `Save match to file` box on the main dialog and choose the location of
-the file. Note that the file will be overwritten if it already exists.
-
-If you're not using Ant, you can run the `battlecode.client.Main` class from the
-command line or an IDE. You should pass an argument `-c [CONF_FILE]` to point it
-at a battlecode configuration file.
+After downloading the client using `gradle unpackGradle`, there will be a folder `client/` which holds the app for running matches. Double click this application to open it; you are now looking at the game client for Battlecode 2017! **NOTE: Do not move any application files in the `client` folder, as you may lose the ability to run matches properly!**
 
 #### Client Basics
 
-After you start your match, you should see a map with a bunch of robots on it.
-The top left has controls for playing through the game: playing, pausing, skipping
-to a certain round, etc.
+There are a few sections to the client that you should be aware of:
 
-You can click on a robot to get its detailed information. Details about that robot
-will show up on the top panel, such as its bytecode usage and its indicator strings.
-You can also hover over a map tile to get information about its location and the number
-of parts and rubble on that tile.
+**Side Panel** - The side panel to the left has a information and controls for managing Battlecode matches. The first section has information regarding the number of units each team has, as well as that teams total victory point and bullet counts. The bottom of the side panel also has a game queue, which will display games and their matches when they are added to the client. The top of this side panel also has tabs to switch between a map editor, game view, help panel, and match runner.
 
-The left pane shows the number of units of each type. In addition, there are four bars.
-The first and third bars show how many parts each team has. The second and fourth bars
-display the total part values of the red and blue armies. This value is computed by
-summing the part cost of each team's robots and is meant to be used as an indicator of
-which team has the stronger army.
+**Control Panel** - The top of the screen has a control panel which can be used to control the current match being viewed. The timeline can be clicked to seek to a specific turn in the match, while standard play, pause, seek forward, seek backward, and restart buttons can also be used to control the playback of a match. The add button [`+`] can be used to run `.bc17` files, which hold games.
 
-Some basic animations:
-- colored lines represent attacks
-- purple rings represent broadcasts
-- circles on the map indicate parts
-- the darkness of a map tile represents how much rubble there is
-- brackets around a unit indicate infection (green = zombie, purple = viper)
+**Game Area** - The majority of the screen is taken up by the game panel, where matches will be displayed (note that this will be empty until a game is loaded).
 
-There are also a number of keyboard shortcuts below that you can use to play around
-with the cilent.
+#### Playing a Saved Local Match
+
+Since games are saved as `.bc17` files, these files can be saved and run on demand. Simply use the + button as mentioned above to load a game.
+
+#### Creating a Match
+
+Clicking the "Run Match" button in the side panel will allow you to run robots against each other on multiple maps (note that loading this tab may take a few seconds, as it searches for your players and maps). Select your two teams, and use the checkboxes to choose which maps to run within the game. Then click "Run Match" at the bottom of the form to compute and display the match within the client. **Note that it may take a few seconds to load the players, run the matches, and begin displaying them in the client**.
+
+The maps which can be used are located in the `map/` folder within the root directory of this scaffold. There are also some default maps which we include for you to test your players on. The players which can be used will be any `RobotPlayer.java` file found in the `src/` folder in the root directory of this scaffold.
 
 ### Headless matches
 
@@ -222,17 +198,27 @@ This task takes several paramters: `teamA`, `teamB`, and `maps`. These can be sp
 
 `teamA` and `teamB` correspond to the packages containing teams A and B, respectively. `maps` should be set to a comma-separated list of maps. If you are unsure as to what format to use for entering, refer to the output of `gradle listMaps listPlayers`.
 
+## Debugging your Player
 
-### Playing Back from a File
+Normally, the software computes the match well ahead of what is being currently
+viewed. However, selecting "compute and view match synchronously" from the match
+dialog puts the software in "lockstep mode", where the computation and viewing
+move in lockstep. This is generally slower than running them independently, but
+it allows for some interesting debugging features.
 
-If you have a match file that you'd like to play back (i.e., from running a match in headless mode) you can play this back using the client.
+While in lockstep mode, right-clicking on an open square in the map brings up a
+menu that lets you add new units to the map. Right-clicking on an existing unit
+allows you to set its control bits, which the robot's player can query and react
+to. You can also drag-and-drop units on the map.
 
-These match files have the extension `bc17`. You can also play back scrimmage match files that are downloaded from the website.
+These debugging features are intended to help you test your robots in situations
+that might otherwise be hard to get them into (e.g., what happens if one of my
+archons gets cut off from the rest...?). However, if the players are not written
+defensively, these unexpected manual changes can interfere with their control
+logic. Keep this in mind when using the debugging features.
 
-
-### Match Sets
-
-This year, each game between two teams consists of a set of matches. To run multiple matches in a game, use the menu in the client to select a series of maps. A match will be played on each map in the list, in order.
+Also, during the tournament and scrimmages, you will not be able to manually
+affect the game in this way.
 
 
 ## Uploading your Player
@@ -255,7 +241,6 @@ the `maps` folder. Any maps placed there will be discovered by the client. For m
 about how to write your own map files, check the specs.
 
 We recommend using the map editor to create maps. The map editor can be ran from the client. Instructions can be found within the client.
-
 
 ## Scala
 
