@@ -13,6 +13,11 @@
 .gradle
 /client/
 *.jar
+*.iml
+*.ipr
+*.iws
+/.idea/
+
 
 # User-specific stuff:
 battlecode-scaffold.iws

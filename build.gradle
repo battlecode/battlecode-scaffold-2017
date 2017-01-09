@@ -17,7 +17,9 @@ apply plugin: 'eclipse'
 // Extra tools from battlecode.
 apply plugin: 'battlecode'
 
+// Tell gradle that we want Java 8.
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // We override Gradle's defaults for project directory layout.
 sourceSets {
