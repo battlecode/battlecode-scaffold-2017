@@ -79,6 +79,14 @@ eclipse {
     }
 }
 
+// IntelliJ settings.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
 // Default configuration for running matches.
 if (!project.hasProperty("teamA")) {
     ext.teamA = "examplefuncsplayer"
