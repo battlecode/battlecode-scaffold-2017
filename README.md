@@ -214,25 +214,18 @@ with the cilent.
 ### Headless matches
 
 Headless matches run a match without viewing it - they run the server without
-the client. Invoke the ant `headless` command to run a headless match.
+the client. Invoke the gradle `run` task to run a headless match.
 
-You can edit `bc.conf` to change the players and maps run during a headless
-match, or supply ant with a `-Dbc.conf=[CONF_FILE]` argument to use
-another battlecode configuration file.
+This task takes several paramters: `teamA`, `teamB`, and `maps`. These can be specified on command line with `gradle run -PteamA=<team A> -PteamB=<team B> -Pmaps=<maps>`.
 
-If you're not using Ant, you can run the `battlecode.server.Main` class from the
-command line or an IDE. You should pass an argument `-c [CONF_FILE]` to point it
-at a battlecode configuration file.
+`teamA` and `teamB` correspond to the packages containing teams A and B, respectively. `maps` should be set to a comma-separated list of maps. If you are unsure as to what format to use for entering, refer to the output of `gradle listMaps listPlayers`.
 
 
 ### Playing Back from a File
 
-If you have a match file that you'd like to play back (i.e., from saving one
-previously) you can choose "Play back from match file" and choose the match file
-to play back. The remainder of the dialog settings will be ignored.
+If you have a match file that you'd like to play back (i.e., from running a match in headless mode) you can play this back using the client.
 
-These match files have the extension `.rms`. You can play back scrimmage match files
-that are downloaded from the website.
+These match files have the extension `bc17`. You can also play back scrimmage match files that are downloaded from the website.
 
 
 ### Match Sets
