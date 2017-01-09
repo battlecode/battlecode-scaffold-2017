@@ -115,24 +115,23 @@ IDE, using a terminal, or mixing and matching.
   You'll need to re-add them using `Project / Properties / Java Build Path`.
 
 ### Using IntelliJ IDEA
-//TODO: update this section
 - Install IntelliJ IDEA Community Edition:
   https://www.jetbrains.com/idea/download/
 
 - In the `Welcome to IntelliJ IDEA` window that pops up when you start IntelliJ,
-  select `Open` (NOT `Import project` or `Create new project`)
+  select `Import Project`
 
-- In the `Open File or Project` window, select `battlecode-scaffold/ide/intellij`
-  (NOT just `battlecode-scaffold`).
+- In the `Open File or Project` window, select the `build.gradle` file in the scaffold folder.
 
-- Select the `Update Battlecode` ant target in the run configurations box (a
-  rounded rectangle next to a green triangle) and run it (using the green
-  triangle). You can also run it using the `Run / Run...` menu option.
+- Check the options "Create separate module per source set", and "Use gradle wrapper task configuration". Set the "Gradle JVM" option to 1.8. (If you don't have a 1.8 option, see the "Getting Started" section above.
 
-- You're good to go; you can run other ant tasks using the other run
-  configurations, or using the `Ant Build` tool window (accessible from
-  `View / Tool Windows / Ant Build`)
+- Hit OK.
 
+- Wait a minute or two for IntelliJ to finish configuring itself.
+
+- When the bar at the bottom of the screen has stopped downloading things, we'll need to check that everything is set up correctly. Go to `View / Tool Windows / Gradle`. In the new window that pops up, select `Tasks / build / build`, and double click it. You should now see a nice tree of tasks unfold at the bottom of the screen. If you run into an error here, you should get help. Try going to the forums (http://battlecodeforum.org) or to IRC (http://irc.lc/freenode/battlecode).
+
+- If you haven't seen any errors, you should be good to go. There should now be a folder called `client` in your scaffold folder; if you go in there, and double click the `Battlecode Client` application, you should be able to run and watch matches. (Please don't move that application, it will be sad.)
 
 ### Using a terminal
 
@@ -149,6 +148,9 @@ IDE, using a terminal, or mixing and matching.
 
 - You're good to go. Run `gradle -q tasks` to see the other Gradle build
   tasks available. You shouldn't need to use any tasks outside of the "battlecode" group.
+
+- To run a match, use the following command:
+  `
 
 
 ## Writing Players
