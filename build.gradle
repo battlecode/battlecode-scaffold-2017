@@ -1,3 +1,7 @@
+// This is the build file we use to compile and run Battlecode players.
+// We're using Gradle: https://gradle.org/
+
+// Apply some plugins so that Gradle can automatically infer some config.
 apply plugin: 'java'
 //apply plugin: 'scala'
 //apply plugin: 'kotlin'
@@ -7,40 +11,52 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
+// Override Gradle's defaults for project setup.
 sourceSets {
     main {
         java.srcDirs = ["src"]
-
         output.classesDir = "$buildDir/src"
     }
+
     test {
         java.srcDirs = ["test"]
-
         output.classesDir = "$buildDir/tests"
     }
 }
 
 repositories {
+    // Let Gradle know about our own repository for hosting Battlecode.
     maven {
         url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
     }
-
-    jcenter()
 }
 
+// Mark the client as a special dependency, so that we can handle it separately.
+configurations {
+    client
+}
+
+// Download a different version of the client depending on the local OS.
+def os = System.getProperty("os.name").toLowerCase()
+def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
+                 os.startsWith('mac') ? 'battlecode-client-mac' :
+                 'battlecode-client-linux'
+
+// Tell Gradle to download the game and client.
 dependencies {
     compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
-
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    client group: 'org.battlecode', name: clientName, version: '2017.+'
 }
 
+// Eclipse specifc setup to enable docs and sources
 eclipse {
     classpath {
         downloadJavadoc = true
+        downloadSources = true
     }
 }
 
-// setup default config
+// Default configuration for running matches
 if (!project.hasProperty("teamA")) {
     ext.teamA = "examplefuncsplayer"
 }
@@ -51,7 +67,7 @@ if (!project.hasProperty("maps")) {
     ext.maps = "shrine"
 }
 
-task run(type: JavaExec, dependsOn: ['build']) {
+task run(type: JavaExec, dependsOn: 'build') {
     description 'Runs a match without starting the client.'
 
     main = 'battlecode.server.Main'
@@ -71,23 +87,6 @@ task run(type: JavaExec, dependsOn: ['build']) {
     ]
 }
 
-// Handle downloading the client
-
-
-def os = System.getProperty("os.name").toLowerCase()
-def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
-                 os.startsWith('mac') ? 'battlecode-client-mac' :
-                 'battlecode-client-linux'
-
-configurations {
-    client
-}
-
-dependencies {
-    client group: 'org.battlecode', name: clientName, version: '2017.+'
-}
-
-// TODO test on windows while client is running
 task unpackClient(type: Copy, dependsOn: configurations.client) {
     description 'Downloads the client.'
 
