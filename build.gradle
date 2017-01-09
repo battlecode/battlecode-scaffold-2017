@@ -105,6 +105,8 @@ task unpackClient(type: Copy, dependsOn: configurations.client) {
     into 'client/'
 }
 
+build.dependsOn('unpackClient')
+
 // Another task. This one accepts three optional parameters, or "properties",
 // corresponding to the bots used by the two teams, and the map(s) used in this
 // game. These properties can be set in the command line with:
