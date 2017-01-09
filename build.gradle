@@ -1,17 +1,20 @@
 // This is the build file we use to compile and run Battlecode players.
 // We're using Gradle: https://gradle.org/
 
-// Apply some plugins so that Gradle can automatically infer some config.
+// Gradle's plugins allow it to automatically generate build scripts
+// for different types of code. Here we apply the 'java' plugin, which provide
+// all the tools needed to build player code!
 apply plugin: 'java'
 //apply plugin: 'scala'
 //apply plugin: 'kotlin'
 
+// These plugins allow for this build script to be compatible with IDEs.
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
-// Override Gradle's defaults for project setup.
+// We override Gradle's defaults for project directory layout.
 sourceSets {
     main {
         java.srcDirs = ["src"]
@@ -48,7 +51,7 @@ dependencies {
     client group: 'org.battlecode', name: clientName, version: '2017.+'
 }
 
-// Eclipse specifc setup to enable docs and sources
+// Eclipse specifc setup to enable docs and sources.
 eclipse {
     classpath {
         downloadJavadoc = true
@@ -56,7 +59,7 @@ eclipse {
     }
 }
 
-// Default configuration for running matches
+// Default configuration for running matches.
 if (!project.hasProperty("teamA")) {
     ext.teamA = "examplefuncsplayer"
 }
@@ -67,8 +70,31 @@ if (!project.hasProperty("maps")) {
     ext.maps = "shrine"
 }
 
+// Here we define a task. Tasks like this one, 'unpackClient', can be
+// executed in the terminal with `./gradlew unpackClient` in Unix or
+// `gradlew.bat unpackClient` in Windows.
+task unpackClient(type: Copy, dependsOn: configurations.client) {
+    description 'Downloads the client.'
+    group 'battlecode'
+
+    dependsOn configurations.client
+
+    from {
+        configurations.client.collect {
+            zipTree(it)
+        }
+    }
+    into 'client/'
+}
+
+// Another task. This one accepts three optional parameters, or "properties",
+// corresponding to the bots used by the two teams, and the map(s) used in this
+// game. These properties can be set in the command line with:
+// `./gradlew(.bat) -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
+// separated list of maps>`
 task run(type: JavaExec, dependsOn: 'build') {
     description 'Runs a match without starting the client.'
+    group 'battlecode'
 
     main = 'battlecode.server.Main'
     classpath = sourceSets.main.runtimeClasspath
@@ -87,21 +113,11 @@ task run(type: JavaExec, dependsOn: 'build') {
     ]
 }
 
-task unpackClient(type: Copy, dependsOn: configurations.client) {
-    description 'Downloads the client.'
-
-    dependsOn configurations.client
-
-    from {
-        configurations.client.collect {
-            zipTree(it)
-        }
-    }
-    into 'client/'
-}
-
+// This task prints out all available players, in the format that the `run`
+// task expects them to be given as.
 task listPlayers {
     description 'Lists all available players.'
+    group 'battlecode'
 
     doLast {
         sourceSets.main.allJava.each {
@@ -115,8 +131,11 @@ task listPlayers {
     }
 }
 
+// This task prints out all available maps, in the format that the `run` task
+// expects them to be given as
 task listMaps {
     description 'Lists all available maps.'
+    group 'battlecode'
 
     doLast {
         sourceSets.main.compileClasspath.each {
