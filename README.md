@@ -92,8 +92,6 @@ IDE, using a terminal, or mixing and matching.
 - Install and open the latest version of Eclipse:
   http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
 
-- Install the Buildship plugin for Eclipse.
-
 - Create a new Eclipse workspace. The workspace should NOT contain the
   battlecode-scaffold folder.
 
@@ -109,7 +107,7 @@ IDE, using a terminal, or mixing and matching.
 
 #### Caveats
 
-- You may find that your version of Eclipse already has installed an older version of the Buildship plugin. Make sure that you have the newest version (2.0.0) installed.
+- If you are unable to find import options for Gradle projects, you may be using an old version of Eclipse. Note that even old versions of Neon may lack the necessary plugins to import Gradle projects. If updating your Eclipse version still does not work, you may need to manually install the "Buildship" plugin from the Eclipse marketplace.
 
 - If you rename or add jar files to the lib directory, Eclipse gets confused.
   You'll need to re-add them using `Project / Properties / Java Build Path`.

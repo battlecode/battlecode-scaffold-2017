@@ -132,11 +132,11 @@ task listPlayers {
 
     doLast {
         sourceSets.main.allJava.each {
-            if (it.toString().endsWith('/RobotPlayer.java')) {
+            if (it.getName().equals('RobotPlayer.java')) {
                 URI base = new File(project.projectDir, 'src').toURI()
                 URI full = it.toURI()
                 String path = base.relativize(full).toString()
-                println path.substring(0, path.lastIndexOf('/')).replaceAll('/', '.')
+                println 'PLAYER: '+path.substring(0, path.lastIndexOf('/')).replaceAll('/', '.')
             }
         }
     }
@@ -154,11 +154,9 @@ task listMaps {
                 FileCollection fc = zipTree(it)
                 fc += fileTree(dir: 'matches')
                 fc.each {
-                    String fn = it.toString()
+                    String fn = it.getName()
                     if (fn.endsWith('.map17')) {
-                        int startPos = fn.lastIndexOf('/') + 1
-                        int endPos = fn.lastIndexOf('.')
-                        println fn.substring(startPos, endPos)
+                        println 'MAP: '+fn.substring(0, fn.indexOf('.map17'))
                     }
                 }
             }
