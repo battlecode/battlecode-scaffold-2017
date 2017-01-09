@@ -14,7 +14,7 @@ apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-// Extra tools from battlecode :)
+// Extra tools from battlecode.
 apply plugin: 'battlecode'
 
 sourceCompatibility = 1.8
@@ -67,7 +67,7 @@ dependencies {
     compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
 }
 
-// Eclipse specifc setup to enable docs and sources, and configure layout.
+// Eclipse specific setup to enable docs and sources, and configure layout.
 eclipse {
     classpath {
         downloadJavadoc = true
@@ -151,7 +151,7 @@ task listPlayers {
 }
 
 // This task prints out all available maps, in the format that the `run` task
-// expects them to be given as
+// expects them to be given as.
 task listMaps {
     description 'Lists all available maps.'
     group 'battlecode'
@@ -186,7 +186,7 @@ task jarForUpload(type: Jar) {
 // Battlecode updates a lot.
 // We should make sure to check for new dependencies frequently.
 configurations.all {
-    // Check for updates every build
+    // Check for updates every build.
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
@@ -199,7 +199,7 @@ buildscript {
         }
     }
     dependencies {
-        // Load the battlecode plugin onto the classpath
+        // Load the battlecode plugin onto the classpath.
         classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+', changing: true
     }
     configurations.all {
