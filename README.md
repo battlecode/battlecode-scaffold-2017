@@ -230,79 +230,29 @@ These match files have the extension `bc17`. You can also play back scrimmage ma
 
 ### Match Sets
 
-This year, each match between two teams consists of a set of games. To run
-multiple games in a match, use the add and remove buttons below the map dropdown
-box to add maps to the list. A game will be played on each map in the list, in
-order. If you don't add any maps, the match will consist of one game, on the map
-selected in the dropdown box.
-
-
-## Debugging your Player
-
-Normally, the software computes the match well ahead of what is being currently
-viewed. However, selecting "compute and view match synchronously" from the match
-dialog puts the software in "lockstep mode", where the computation and viewing
-move in lockstep. This is generally slower than running them independently, but
-it allows for some interesting debugging features.
-
-While in lockstep mode, right-clicking on an open square in the map brings up a
-menu that lets you add new units to the map. Right-clicking on an existing unit
-allows you to set its control bits, which the robot's player can query and react
-to. You can also drag-and-drop units on the map.
-
-These debugging features are intended to help you test your robots in situations
-that might otherwise be hard to get them into (e.g., what happens if one of my
-archons gets cut off from the rest...?). However, if the players are not written
-defensively, these unexpected manual changes can interfere with their control
-logic. Keep this in mind when using the debugging features.
-
-Also, during the tournament and scrimmages, you will not be able to manually
-affect the game in this way.
+This year, each game between two teams consists of a set of matches. To run multiple matches in a game, use the menu in the client to select a series of maps. A match will be played on each map in the list, in order.
 
 
 ## Uploading your Player
 
-You should upload a zip or jar file containing your team's source code.
+You should upload a jar file containing your team's source code.
 
-First, your player must use the package name `teamXXX` where XXX is your team number.
-This means that the first line of every Java file should be in the format `package teamXXX;`.
+This year, there are no restrictions on the package your player's code may be placed in; only that your `run(RobotController rc)` method be in a file named `RobotPlayer.java`. (or `RobotPlayer.scala`!)
 
-Next, there are four ways to generate the zip or jar file to upload:
+To build this jar, run the gradle task `jarForUpload`. This can be done from an IDE, or from the command line.
 
-1. You can build this jar automatically using the command `ant -Dteam=teamXXX jar`
-2. You can create a zip file of the `src/teamXXX` directory.
-3. With Eclipse, run the `Jar Team for Upload` (dropdown under play button with toolbox)
-and for the label, make sure to pick `teamXXX` where XXX is your team number.
-4. With IntelliJ, run `Jar Player`. You first have to set your team with `Views /
-Tool Windows / Ant Build / Battlecode 2016 Scaffold / Properties / Execution`).
-
-Then, go to http://www.battlecode.org/contestants/upload/ and upload this file.
-The website will attempt to compile your program and if it succeeds, then you can
-go challenge other teams to scrimmages.
+Then, go to http://www.battlecode.org/contestants/upload/ and upload this file. The website will attempt to compile your program and if it succeeds, then you can go challenge other teams to scrimmages.
 
 ## Maps
 
-This year, the map files (the XML map files) are packaged into the battlecode jar.
+This year, the map files are packaged into the battlecode jar.
 You can access the map files at
 https://github.com/battlecode/battlecode-server/tree/master/src/main/battlecode/world/resources
 if you are curious. In addition, you can write your own maps and place them in
 the `maps` folder. Any maps placed there will be discovered by the client. For more help
 about how to write your own map files, check the specs.
 
-We recommend using the map editor to create maps. To run the map editor, use `ant mapeditor`
-or run `Map Editor`. This will open up a map editor. There are video lecture tutorials on
-how to use the map editor. The map editor at the moment does not allow you to specify
-the zombie spawn schedule, so you will have to insert that yourself into the XML file
-after the XML file has been created.
-
-## Advanced Configuration
-
-The Battlecode distribution includes a configuration file, `bc.conf`, that
-allows you to tweak some of the software's settings. Appendix A contains a
-listing of configurable properties.
-
-The properties can also be set in any way that Java properties are set. This
-includes using `-D[property]=[value]` on the `java` or `ant` command line.
+We recommend using the map editor to create maps. The map editor can be ran from the client. Instructions can be found within the client.
 
 
 ## Appendix A: Configuration Properties and Command-line Arguments
