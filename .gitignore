@@ -12,6 +12,7 @@
 *.pyc
 .gradle
 /client/
+*.jar
 
 # User-specific stuff:
 battlecode-scaffold.iws

@@ -90,7 +90,7 @@ if (!project.hasProperty("maps")) {
 
 // Here we define a task. Tasks like this one, 'unpackClient', can be
 // executed in the terminal with `./gradlew unpackClient` in Unix or
-// `gradlew.bat unpackClient` in Windows.
+// `gradlew unpackClient` in Windows.
 task unpackClient(type: Copy, dependsOn: configurations.client) {
     description 'Downloads the client.'
     group 'battlecode'
@@ -108,8 +108,12 @@ task unpackClient(type: Copy, dependsOn: configurations.client) {
 // Another task. This one accepts three optional parameters, or "properties",
 // corresponding to the bots used by the two teams, and the map(s) used in this
 // game. These properties can be set in the command line with:
-// `./gradlew(.bat) -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
-// separated list of maps>`
+// On windows:
+//   `gradlew -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
+//   separated list of maps>`
+// On OS X and Linux:
+//   `./gradlew -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
+//   separated list of maps>`
 task run(type: JavaExec, dependsOn: 'build') {
     description 'Runs a match without starting the client.'
     group 'battlecode'
