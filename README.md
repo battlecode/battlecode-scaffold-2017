@@ -13,22 +13,24 @@ Other documentation and resources can be found at: https://www.battlecode.org/
 
 - `README.md`
     This file.
-- `build.xml`
-    The Ant build file used to build and run players.
-- `ivy.xml`
-    The Ivy file used to find and download dependencies
-- `bc.conf`
-    The battlecode configuration file containing user settings.
+- `build.gradle`
+    The Gradle build file used to build and run players.
 - `src/`
-    Player source code
+    Player source code.
 - `test/`
-    Player test code
-- `lib/`
-    Dependencies directory
-- `bin/`
-    The output directory for builds; can be safely ignored
-- `.ivy/`
-    An extra directory containing ivy resources; can be safely ignored
+    Player test code.
+- `client/`
+    Contains the client.
+- `build/`
+    Contains compiled player code and other artifacts of the build process. Can be safely ignored.
+- `matches/`
+    The output folder for match files.
+- `maps/`
+    The default folder for custom maps.
+- `gradlew`, `gradlew.bat`
+    The Unix (OS X/Linux) and Windows versions, respectively, of the Gradle wrapper. These are nifty scripts that you can execute in a terminal to run the Gradle build tasks of this project. If you aren't planning to do command line development, these can be safely ignored.
+- `gradle/`
+    Contains files used by the Gradle wrapper scripts. Can be safely ignored.
 
 
 ### How does Battlecode work?
@@ -48,33 +50,21 @@ The Battlecode software consists of three major components:
   display that match as it computes. The client also plays match files like
   those from scrimmage matches and the tournaments.
 
-This project scaffold handles installing and running these components using Ant
-and Ivy.
+This project scaffold handles installing and running these components using Gradle.
 
 
-### What is Ant?
+### What is Gradle?
 
-Apache Ant is a Java-based build system similar in theory to UNIX `make`.
+Gradle is a build system that expands upon the features of earlier build systems like Apache Ant and Apache Maven, utilizing a domain-specific language based off of Groovy, a JVM language.
 
 You can run it from a terminal or from an IDE; instructions are below.
 
-You can find Ant's documentation at: http://ant.apache.org/
+You can find Gradle's documentation at: https://gradle.org/
 
-You are not required to use the Ant build script, but you should probably at
+You are not required to use the Gradle build script, but you should probably at
 least read it to get an idea of how things work.
 
-
-### What is Ivy?
-
-Apache Ivy is a "dependency manager" that integrates well with Ant. It handles
-finding and downloading "dependencies": resources that a project needs to build
-and run.
-
-The Ant build file handles loading and invoking Ivy; you shouldn't have to
-concern yourself with it, unless you want to add more dependencies for some
-reason.
-
-You can find Ivy's documentation at: http://ant.apache.org/ivy/
+Note also that you are not required to install Gradle, even if you are working in command line.
 
 
 ## Getting started
@@ -100,43 +90,32 @@ IDE, using a terminal, or mixing and matching.
 ### Using Eclipse
 
 - Install and open the latest version of Eclipse:
-  http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/mars1
+  http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
+
+- Install the Buildship plugin for Eclipse.
 
 - Create a new Eclipse workspace. The workspace should NOT contain the
   battlecode-scaffold folder.
 
-- Run `File -> Import...`, and select `General / Existing Projects Into
-  Workspace`
+- Run `File -> Import...`, and select `Gradle / Gradle Project`.
 
-- In the `Select root directory` field, navigate to `battlecode-scaffold/ide/eclipse`.
-  Note: DO NOT select just `battlecode-scaffold` as the root directory; you have
-  to select `battlecode-scaffold/ide/eclipse`.
-  Finish importing the project.
+- In the `Select root directory` field, navigate to `battlecode-scaffold-2017`, the directory containing this README. Finish importing the project.
 
-- Click the dropdown arrow next to the `External Tools` icon (a play button with
-  a toolbox). You should see a set of tasks our build file can run.
+- Open `Window / Show View / Other...`. Select `Gradle / Gradle Tasks`.
 
-- Run `Update Battlecode`.
+- You should now see a list of available Gradle tasks somewhere in the IDE. Open the `battlecode` group, and double-click `unpackClient`.
 
-- You're good to go; you can run other ant tasks using the other `External Tools`
-  targets.
-
-- If you don't see what you're looking for the dropdown, click `External Tools
-Configurations` in the dropdown, and then expand `Ant Build` on the left. You
-should be able to see the different run options. Pick The one you want and then
-press `Run`. This will add it to the dropdown for future runs.
+- You're good to go; you can run other Gradle tasks using the other options in the "Gradle Tasks" menu. Note that you shouldn't need any task not in the `battlecode` group.
 
 #### Caveats
 
-- The Eclipse project is a slightly odd configuration, since it's not stored in
-  the base of the project. All files are *links* to `${BATTLECODE_LOC}/filename`.
-  Launch configurations have to use `${project_loc:battlecode-scaffold}/../..`,
-  since they can only access string variables.
+- You may find that your version of Eclipse already has installed an older version of the Buildship plugin. Make sure that you have the newest version (2.0.0) installed.
 
 - If you rename or add jar files to the lib directory, Eclipse gets confused.
   You'll need to re-add them using `Project / Properties / Java Build Path`.
 
 ### Using IntelliJ IDEA
+//TODO: update this section
 - Install IntelliJ IDEA Community Edition:
   https://www.jetbrains.com/idea/download/
 
@@ -157,25 +136,24 @@ press `Run`. This will add it to the dropdown for future runs.
 
 ### Using a terminal
 
-- Install Apache Ant, the build tool used in the project. You can do it
-  manually: http://ant.apache.org/manual/install.html#getting
-  Or, you can use your favorite package manager.
+- Gradle commands may be ran in two different ways. You can install Gradle (https://gradle.org/gradle-download/) and use the binaries it installs, or you may use the Gradle wrapper.
 
-  On every system you will need to set the `JAVA_HOME` environment variable to
+- If using the former option, simply start every Gradle command with `gradle`.
+
+- If opting to use the wrapper, start every Gradle command with `./gradlew`, if using Unix, or `gradlew.bat`, if using Windows.
+
+- On every system you will need to set the `JAVA_HOME` environment variable to
   point to the installation path of your JDK.
 
-  You may also need the `ANT_HOME` environment variable in some cases. Just set
-  this to be the path to your ant installation and you should be good to go.
+- Navigate to the root directory of the project, and run `gradle unpackClient`.
 
-- Navigate to the root directory of the project, and run `ant update`.
-
-- You're good to go. Run `ant -p` to see the other ant build
-  tasks available.
+- You're good to go. Run `gradle -q tasks` to see the other Gradle build
+  tasks available. You shouldn't need to use any tasks outside of the "battlecode" group.
 
 
 ## Writing Players
-
-The included `build.xml` file allows you to compile your player and prepare it
+//TODO: update this section
+The included `build.gradle` file allows you to compile your player and prepare it
 for submission without having to worry about the Java classpath and other
 settings. To take advantage of this, simply place the source code for your
 player(s) in a subdirectory of `src` folder in your Battlecode installation
@@ -191,7 +169,7 @@ However, only the `teamXXX` player can be submitted for your team.
 Building after running this might help resolve issues with version changes.
 
 ## Running Matches
-
+//TODO: update this section
 ### Local
 
 Local matches are the most common way to run a match - they are computed and
