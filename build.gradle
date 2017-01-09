@@ -2,7 +2,7 @@
 // We're using Gradle: https://gradle.org/
 
 // Gradle's plugins allow it to automatically generate build scripts
-// for different types of code. Here we apply the Java plugin, which provide
+// for different types of code. Here we apply the Java plugin, which provides
 // all the tools needed to build player code!
 apply plugin: 'java'
 
