@@ -16,3 +16,7 @@
 # User-specific stuff:
 battlecode-scaffold.iws
 
+# Eclipse user-specific files
+.classpath
+.project
+.settings/
