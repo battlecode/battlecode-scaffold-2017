@@ -204,7 +204,7 @@ task jarForUpload(type: Jar) {
 // We should make sure to check for new dependencies frequently.
 configurations.all {
     // Check for updates every build.
-    resolutionStrategy.cacheDynamicVersionsFor 3600, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 60, 'seconds'
 }
 
 
@@ -221,6 +221,6 @@ buildscript {
     }
     configurations.all {
         // Check for updates every build.
-        resolutionStrategy.cacheDynamicVersionsFor 3600, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 60, 'seconds'
     }
 }
