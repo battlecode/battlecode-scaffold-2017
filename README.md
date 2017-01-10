@@ -133,7 +133,7 @@ If you get errors while trying to execute Gradle tasks, make sure that you do no
 
 - Wait a minute or two for IntelliJ to finish configuring itself.
 
-- When the bar at the bottom of the screen has stopped downloading things, we'll need to check that everything is set up correctly. Go to `View / Tool Windows / Gradle`. In the new window that pops up, select `Tasks / build / build`, and double click it. You should now see a nice tree of tasks unfold at the bottom of the screen. If you run into an error here, you should get help. Try going to the forums (http://battlecodeforum.org) or to IRC (http://irc.lc/freenode/battlecode).
+- When the bar at the bottom of the screen has stopped downloading things, we'll need to check that everything is set up correctly. Go to `View / Tool Windows / Gradle`. In the new window that pops up, select `Tasks / battlecode / build`, and double click it. You should now see a nice tree of tasks unfold at the bottom of the screen. If you run into an error here, you should get help. Try going to the forums (http://battlecodeforum.org) or to IRC (http://irc.lc/freenode/battlecode).
 
 - If you haven't seen any errors, you should be good to go. There should now be a folder called `client` in your scaffold folder; if you go in there, and double click the `Battlecode Client` application, you should be able to run and watch matches. (Please don't move that application, it will be sad.)
 
