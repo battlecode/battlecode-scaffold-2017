@@ -1,7 +1,7 @@
 // This is the build file we use to compile and run Battlecode players.
-// We're using Gradle: https://gradle.org/
+// We're using Gradle. You can find more information on Gradle here: `https://gradle.org/`.
 
-// Download the most recent battlecode plugin from the battlecode custom repository
+// Download the most recent battlecode plugin from the battlecode custom repository.
 buildscript {
     repositories {
         maven {
@@ -25,17 +25,17 @@ plugins {
     id 'eclipse'
 }
 
-// Mark the client as a special dependency, so that we can handle it separately.
+// Mark the client as a special dependency, so that we can download it manually and otherwise handle it differently.
 configurations {
     client
 }
 
-// Battlecode updates a lot so we should make sure to check for new dependencies once every minute
+// Battlecode updates a lot so we should make sure to check for new dependencies once every minute.
 configurations.all {
     resolutionStrategy.cacheDynamicVersionsFor 1, 'MINUTES'
 }
 
-// These are Eclipse IDE specific settings
+// These are Eclipse IDE specific settings.
 eclipse {
     classpath {
         downloadJavadoc = true
@@ -55,9 +55,9 @@ idea {
 // Here are some project parameters that can be specified manually or they automatically use sensible defaults.
 // Here is an example of running the run task with a different maps directory:
 // On Windows:
-//      `gradlew run -PmapsDirectory=custom/maps/directory/path`
+//      `gradlew run -PmapsDirectory=<<<custom/maps/directory/path`>>>
 // On Mac OS X and Linux:
-//      `./gradlew run -PmapsDirectory=custom/maps/directory/path`
+//      `./gradlew run -PmapsDirectory=<<<custom/maps/directory/path`>>>
 ext.matchesDirectory = getScriptParameterOrDefault('matchesDirectory', 'matches')
 ext.matchFileExtension = getScriptParameterOrDefault('matchFileExtension', '.bc17')
 ext.mapsDirectory = getScriptParameterOrDefault('mapsDirectory', 'maps')
@@ -65,14 +65,14 @@ ext.mapFileExtension = getScriptParameterOrDefault('mapFileExtension', '.map17')
 ext.battlecodeClientName = getScriptParameterOrDefault('battlecodeClientName', getOsSpecificClientName())
 
 // This method generates the battlecode client dependency name that is specific to the local OS.
-// Windows, Mac and Linux are supported, and it will default to trying Linux if your OS is unknown
+// Windows, Mac and Linux are supported, and it will default to trying Linux if your OS is unknown.
 static String getOsSpecificClientName(){
     def os = System.getProperty('os.name').toLowerCase()
     def clientSuffix = os.startsWith('windows') ? 'win' : os.startsWith('mac') ? 'mac' : 'linux'
     return "battlecode-client-$clientSuffix"
 }
 
-// This method tries to get the current value of the property; it returns the default value if no such property exists
+// This method tries to get the current value of the property; it returns the default value if no such property exists.
 def getScriptParameterOrDefault(String property, defaultValue) {
     if (project.hasProperty(property)) {
         return project.property(property);
@@ -82,7 +82,7 @@ def getScriptParameterOrDefault(String property, defaultValue) {
     }
 }
 
-// This tells Gradle where it can find the dependencies and download them
+// This tells Gradle where it can find the dependencies and download them.
 repositories {
     // Let Gradle know about our own repository for hosting Battlecode.
     maven {
@@ -93,13 +93,13 @@ repositories {
     jcenter()
 }
 
-// This tells Gradle what dependencies we need downloaded
+// This tells Gradle what dependencies we need downloaded.
 dependencies {
     // The Battlecode engine and client
     compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
     client  group: 'org.battlecode', name: "$battlecodeClientName", version: '2017.+'
 
-    // Scala!
+    // Scala
     compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
     compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.7'
     compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
@@ -144,7 +144,7 @@ sourceSets {
     }
 }
 
-// This tells Gradle to default to the 'run' task if no task is explictly specified
+// This tells Gradle to default to the 'run' task if no task is explicitly specified.
 defaultTasks 'run'
 
 // Here we define a task. This task requires no parameters, so to use it via the command line:
@@ -167,12 +167,12 @@ task unpackClient(type: Copy, dependsOn: configurations.client) {
     into "$clientDirectory/"
 }
 
-// Here we modify the build task to depend on the unpackClient task we defined above
+// Here we modify the build task to depend on the unpackClient task we defined previously.
 build.group = 'battlecode'
 build.dependsOn('unpackClient')
 
-// This task accepts three optional parameters (or 'properties') corresponding to the bots used
-// by the two teams, and the map(s) used in this game. These properties can be set in the command line:
+// This task accepts three optional parameters (or 'properties') corresponding to the bots used by the two teams,
+// and the map(s) used in this game. These properties can be set in the command line:
 // On Windows:
 //      `gradlew -PteamA=<<<team A bot>>> -PteamB=<<<team B bot>>> -Pmaps=<<<comma separated list of maps>>>`
 // On Mac OS X and Linux:
@@ -203,7 +203,7 @@ task run(type: JavaExec, dependsOn: 'build') {
     ]
 }
 
-// This task prints out all available players formatted in the same manner as the `run` task expects
+// This task prints out all available players formatted in the same manner as the `run` task expects them.
 task listPlayers(type: DefaultTask) {
     description 'Lists all available players.'
     group 'battlecode'
@@ -223,7 +223,7 @@ task listPlayers(type: DefaultTask) {
     }
 }
 
-// This task prints out all available maps formatted in the same manner as the `run` task expects
+// This task prints out all available maps formatted in the same manner as the `run` task expects them.
 task listMaps(type: DefaultTask){
     description 'Lists all available maps.'
     group 'battlecode'
@@ -244,8 +244,8 @@ task listMaps(type: DefaultTask){
     }
 }
 
-// This task assembles player code into a Java ARchive (aka a JAR) which can be uploaded
-// Specifically the generated JAR can be uploaded at `http://www.battlecode.org/contestants/upload/`
+// This task assembles player code into a Java ARchive (aka a JAR) which can be uploaded.
+// Specifically the generated JAR can be uploaded at `http://www.battlecode.org/contestants/upload/`.
 task jarForUpload(type: Jar) {
     description 'Assembles source code into a JAR, ready to be uploaded to the Battlecode site.'
     group 'battlecode'
