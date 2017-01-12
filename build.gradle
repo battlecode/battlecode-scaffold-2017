@@ -1,47 +1,28 @@
 // This is the build file we use to compile and run Battlecode players.
 // We're using Gradle: https://gradle.org/
 
-// Gradle's plugins allow it to automatically generate build scripts
-// for different types of code. Here we apply the Java plugin, which provides
-// all the tools needed to build player code!
-apply plugin: 'java'
-
-// The Scala plugin expands upon the Java plugin, allowing us to compile
-// Scala source files.
-apply plugin: 'scala'
-
-// These plugins allow for this build script to be compatible with IDEs.
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-
-// Extra tools from battlecode.
-apply plugin: 'battlecode'
-
-// Tell gradle that we want Java 8.
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-// We override Gradle's defaults for project directory layout.
-sourceSets {
-    main {
-        scala.srcDirs = ["src"]
-        output.classesDir = "$buildDir/classes"
+// Download the most recent battlecode plugin from the battlecode custom repository
+buildscript {
+    repositories {
+        maven {
+            url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
+        }
     }
 
-    test {
-        scala.srcDirs = ["test"]
-        output.classesDir = "$buildDir/tests"
+    dependencies {
+        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+'
     }
 }
 
-repositories {
-    // Let Gradle know about our own repository for hosting Battlecode.
-    maven {
-        url "http://battlecode-maven.s3-website-us-east-1.amazonaws.com/"
-    }
-
-    // Use the JCenter repo to resolve Scala dependencies.
-    jcenter()
+// Gradle's plugins allow it to automatically generate build scripts for different types of code.
+plugins {
+    // The Java plugin, which provides the tools needed to build player code!
+    id 'java'
+    // The Scala plugin expands upon the Java plugin, allowing us to compile scala source files.
+    id 'scala'
+    // These plugins allow for this build script to be compatible with IDEs.
+    id 'idea'
+    id 'eclipse'
 }
 
 // Mark the client as a special dependency, so that we can handle it separately.
@@ -49,37 +30,21 @@ configurations {
     client
 }
 
-// Download a different version of the client depending on the local OS.
-def os = System.getProperty("os.name").toLowerCase()
-def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
-                 os.startsWith('mac') ? 'battlecode-client-mac' :
-                 'battlecode-client-linux'
-
-// The dependencies of this project.
-dependencies {
-    // The Battlecode engine.
-    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
-
-    // The Battlecode client.
-    client group: 'org.battlecode', name: clientName, version: '2017.+'
-
-    // Scala!
-    compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
-    compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.7'
-    compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
+// Battlecode updates a lot so we should make sure to check for new dependencies once every minute
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 1, 'MINUTES'
 }
 
-// Eclipse specific setup to enable docs and sources, and configure layout.
+// These are Eclipse IDE specific settings
 eclipse {
     classpath {
         downloadJavadoc = true
         downloadSources = true
-
         defaultOutputDir = new File(project.buildDir, 'classes-eclipse')
     }
 }
 
-// IntelliJ settings.
+// These are IntelliJ IDEA IDE specific settings.
 idea {
     module {
         downloadSources = true
@@ -87,101 +52,191 @@ idea {
     }
 }
 
-// Default configuration for running matches.
-if (!project.hasProperty("teamA")) {
-    ext.teamA = "examplefuncsplayer"
-}
-if (!project.hasProperty("teamB")) {
-    ext.teamB = "examplefuncsplayer"
-}
-if (!project.hasProperty("maps")) {
-    ext.maps = "shrine"
+// Here are some project parameters that can be specified manually or they automatically use sensible defaults.
+// Here is an example of running the run task with a different maps directory:
+// On Windows:
+//      `gradlew run -PmapsDirectory=custom/maps/directory/path`
+// On Mac OS X and Linux:
+//      `./gradlew run -PmapsDirectory=custom/maps/directory/path`
+ext.matchesDirectory = getScriptParameterOrDefault('matchesDirectory', 'matches')
+ext.matchFileExtension = getScriptParameterOrDefault('matchFileExtension', '.bc17')
+ext.mapsDirectory = getScriptParameterOrDefault('mapsDirectory', 'maps')
+ext.mapFileExtension = getScriptParameterOrDefault('mapFileExtension', '.map17')
+ext.battlecodeClientName = getScriptParameterOrDefault('battlecodeClientName', getOsSpecificClientName())
+
+// This method generates the battlecode client dependency name that is specific to the local OS.
+// Windows, Mac and Linux are supported, and it will default to trying Linux if your OS is unknown
+static String getOsSpecificClientName(){
+    def os = System.getProperty('os.name').toLowerCase()
+    def clientSuffix = os.startsWith('windows') ? 'win' : os.startsWith('mac') ? 'mac' : 'linux'
+    return "battlecode-client-$clientSuffix"
 }
 
-// Here we define a task. Tasks like this one, 'unpackClient', can be
-// executed in the terminal with `./gradlew unpackClient` in Unix or
-// `gradlew unpackClient` in Windows.
+// This method tries to get the current value of the property; it returns the default value if no such property exists
+def getScriptParameterOrDefault(String property, defaultValue) {
+    if (project.hasProperty(property)) {
+        return project.property(property);
+    }
+    else {
+        return defaultValue;
+    }
+}
+
+// This tells Gradle where it can find the dependencies and download them
+repositories {
+    // Let Gradle know about our own repository for hosting Battlecode.
+    maven {
+        url 'http://battlecode-maven.s3-website-us-east-1.amazonaws.com/'
+    }
+
+    // Use the JCenter repo to resolve Scala dependencies.
+    jcenter()
+}
+
+// This tells Gradle what dependencies we need downloaded
+dependencies {
+    // The Battlecode engine and client
+    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
+    client  group: 'org.battlecode', name: "$battlecodeClientName", version: '2017.+'
+
+    // Scala!
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
+    compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.7'
+    compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
+}
+
+// Tell Gradle that we want Java 8.
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// We override Gradle's defaults for project directory layout.
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+
+        scala {
+            srcDirs = ['src']
+        }
+
+        resources {
+            srcDirs = ['src']
+        }
+
+        output.classesDir = "$buildDir/classes"
+    }
+
+    test {
+        java {
+            srcDirs = ['test']
+        }
+
+        scala {
+            srcDirs = ['test']
+        }
+
+        resources {
+            srcDirs = ['test']
+        }
+
+        output.classesDir = "$buildDir/tests"
+    }
+}
+
+// This tells Gradle to default to the 'run' task if no task is explictly specified
+defaultTasks 'run'
+
+// Here we define a task. This task requires no parameters, so to use it via the command line:
+// On Windows:
+//      `gradlew unpackClient`
+// On Mac OS X and Linux:
+//      `./gradlew unpackClient`
 task unpackClient(type: Copy, dependsOn: configurations.client) {
     description 'Downloads the client.'
     group 'battlecode'
-
     dependsOn configurations.client
+
+    ext.clientDirectory = getScriptParameterOrDefault('clientDirectory', 'client')
 
     from {
         configurations.client.collect {
             zipTree(it)
         }
     }
-    into 'client/'
+    into "$clientDirectory/"
 }
 
+// Here we modify the build task to depend on the unpackClient task we defined above
 build.group = 'battlecode'
 build.dependsOn('unpackClient')
 
-// Another task. This one accepts three optional parameters, or "properties",
-// corresponding to the bots used by the two teams, and the map(s) used in this
-// game. These properties can be set in the command line with:
-// On windows:
-//   `gradlew -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
-//   separated list of maps>`
-// On OS X and Linux:
-//   `./gradlew -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
-//   separated list of maps>`
+// This task accepts three optional parameters (or 'properties') corresponding to the bots used
+// by the two teams, and the map(s) used in this game. These properties can be set in the command line:
+// On Windows:
+//      `gradlew -PteamA=<<<team A bot>>> -PteamB=<<<team B bot>>> -Pmaps=<<<comma separated list of maps>>>`
+// On Mac OS X and Linux:
+//      `./gradlew -PteamA=<<<team A bot>>> -PteamB=<<<team B bot>>> -Pmaps=<<<comma separated list of maps>>>`
 task run(type: JavaExec, dependsOn: 'build') {
     description 'Runs a match without starting the client.'
     group 'battlecode'
+
+    // The default player and maps
+    ext.teamA = getScriptParameterOrDefault('teamA', 'examplefuncsplayer')
+    ext.teamB = getScriptParameterOrDefault('teamB', 'examplefuncsplayer')
+    ext.maps = getScriptParameterOrDefault('maps', 'shrine')
 
     main = 'battlecode.server.Main'
     classpath = sourceSets.main.runtimeClasspath
     args = ['-c=-']
     jvmArgs = [
         '-Dbc.server.mode=headless',
-        '-Dbc.server.map-path=maps',
+        "-Dbc.server.map-path=$mapsDirectory",
         '-Dbc.server.debug=true',
         '-Dbc.engine.debug-methods=true',
-        '-Dbc.game.team-a='+project.property('teamA'),
-        '-Dbc.game.team-b='+project.property('teamB'),
-        '-Dbc.game.team-a.url='+sourceSets.main.output.classesDir,
-        '-Dbc.game.team-b.url='+sourceSets.main.output.classesDir,
-        '-Dbc.game.maps='+project.property('maps'),
-        '-Dbc.server.save-file=' + 'matches/' + project.property('teamA') + '-vs-' + project.property('teamB') + '-on-' + project.property('maps') + '.bc17'
+        "-Dbc.game.team-a=$teamA",
+        "-Dbc.game.team-b=$teamB",
+        "-Dbc.game.team-a.url=$sourceSets.main.output.classesDir",
+        "-Dbc.game.team-b.url=$sourceSets.main.output.classesDir",
+        "-Dbc.game.maps=$maps",
+        "-Dbc.server.save-file=$matchesDirectory/$teamA-vs-$teamB-on-$maps$matchFileExtension"
     ]
 }
 
-// This task prints out all available players, in the format that the `run`
-// task expects them to be given as.
-task listPlayers {
+// This task prints out all available players formatted in the same manner as the `run` task expects
+task listPlayers(type: DefaultTask) {
     description 'Lists all available players.'
     group 'battlecode'
 
+    ext.playersDirectory = getScriptParameterOrDefault('playersDirectory', 'src')
+
     doLast {
+        URI playersDirectoryURI = new File(project.projectDir, playersDirectory).toURI()
         (sourceSets.main.allJava + sourceSets.main.allScala).each {
-            if (it.getName().equals('RobotPlayer.java')
-                || it.getName().equals('RobotPlayer.scala')) {
-                URI base = new File(project.projectDir, 'src').toURI()
-                URI full = it.toURI()
-                String path = base.relativize(full).toString()
-                println 'PLAYER: '+path.substring(0, path.lastIndexOf('/')).replaceAll('/', '.')
-            }
+                if (it.name == 'RobotPlayer.java' || it.name == 'RobotPlayer.scala') {
+                    URI playerFileURI = it.toURI()
+                    String playerPath = playersDirectoryURI.relativize(playerFileURI).normalize().toString()
+                    String playerName = playerPath.substring(0, playerPath.lastIndexOf('/')).replaceAll('/', '.');
+                    println "PLAYER: $playerName"
+                }
         }
     }
 }
 
-// This task prints out all available maps, in the format that the `run` task
-// expects them to be given as.
-task listMaps {
+// This task prints out all available maps formatted in the same manner as the `run` task expects
+task listMaps(type: DefaultTask){
     description 'Lists all available maps.'
     group 'battlecode'
 
     doLast {
+        FileCollection projectMapDir = fileTree(new File(project.projectDir, mapsDirectory));
         sourceSets.main.compileClasspath.each {
             if (it.toString().contains('battlecode-2017')) {
-                FileCollection fc = zipTree(it)
-                fc += fileTree(new File(project.projectDir, 'maps'))
-                fc.each {
-                    String fn = it.getName()
-                    if (fn.endsWith('.map17')) {
-                        println 'MAP: '+fn.substring(0, fn.indexOf('.map17'))
+                (zipTree(it) + projectMapDir).each {
+                    String mapFileName = it.getName()
+                    if (mapFileName.endsWith(mapFileExtension)) {
+                        String mapName = mapFileName.substring(0, mapFileName.lastIndexOf(mapFileExtension))
+                        println "MAP: $mapName"
                     }
                 }
             }
@@ -189,38 +244,13 @@ task listMaps {
     }
 }
 
-// This task prepares player code for upload, assembling it into a Java archive.
-// This archive can be uploaded at `www.battlecode.org`.
+// This task assembles player code into a Java ARchive (aka a JAR) which can be uploaded
+// Specifically the generated JAR can be uploaded at `http://www.battlecode.org/contestants/upload/`
 task jarForUpload(type: Jar) {
-    description 'Assembles source code into an archive, ready to be uploaded to the Battlecode site.'
+    description 'Assembles source code into a JAR, ready to be uploaded to the Battlecode site.'
     group 'battlecode'
 
     from sourceSets.main.scala.srcDirs
     destinationDir = project.projectDir
     archiveName = 'battlecode-player-upload.jar'
-}
-
-// Battlecode updates a lot.
-// We should make sure to check for new dependencies frequently.
-configurations.all {
-    // Check for updates every build.
-    resolutionStrategy.cacheDynamicVersionsFor 60, 'seconds'
-}
-
-
-// We need to download the battlecode plugin before we can run the build script; this does that.
-buildscript {
-    repositories {
-        maven {
-            url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
-        }
-    }
-    dependencies {
-        // Load the battlecode plugin onto the classpath.
-        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+'
-    }
-    configurations.all {
-        // Check for updates every build.
-        resolutionStrategy.cacheDynamicVersionsFor 60, 'seconds'
-    }
 }

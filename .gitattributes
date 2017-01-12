@@ -1,0 +1,20 @@
+gradlew         text    eol=lf
+*.bat           text    eol=crlf
+*.gradle        text
+*.htm           text    diff=html
+*.html          text    diff=html
+*.java          text    diff=java
+*.json          text
+*.kt            text
+*.kts           text
+*.md            text
+*.properties    text
+*.sc            text
+*.scala         text
+*.sh            text    eol=lf
+*.txt           text
+*.xml           text
+*.yml           text
+
+*.class         binary
+*.jar           binary
