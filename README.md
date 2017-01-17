@@ -96,7 +96,7 @@ If you get errors while trying to execute Gradle tasks, make sure that you do no
 ### Using Eclipse
 
 - Install and open the latest version of Eclipse:
-  http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
+  http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/neon2
 
 - Create a new Eclipse workspace. The workspace should NOT contain the
   `battlecode-scaffold-2017` folder.
