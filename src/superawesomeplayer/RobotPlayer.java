@@ -28,6 +28,12 @@ public strictfp class RobotPlayer {
             case LUMBERJACK:
                 new Lumberjack(rc);
                 break;
+            case SCOUT:
+                new Scout(rc);
+                break;
+            case TANK:
+                new Tank(rc);
+                break;
         }
     }
 }
