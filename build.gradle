@@ -6,6 +6,9 @@
 // all the tools needed to build player code!
 apply plugin: 'java'
 
+// The Kotlin plugin allows us to compile Kotlin, source files
+apply plugin: 'kotlin'
+
 // The Scala plugin expands upon the Java plugin, allowing us to compile
 // Scala source files.
 apply plugin: 'scala'
@@ -25,11 +28,13 @@ targetCompatibility = 1.8
 sourceSets {
     main {
         scala.srcDirs = ["src"]
+        kotlin.srcDirs = ["src"]
         output.classesDir = "$buildDir/classes"
     }
 
     test {
         scala.srcDirs = ["test"]
+        kotlin.srcDirs = ["test"]
         output.classesDir = "$buildDir/tests"
     }
 }
@@ -58,15 +63,17 @@ def clientName = os.startsWith('windows') ? 'battlecode-client-win' :
 // The dependencies of this project.
 dependencies {
     // The Battlecode engine.
-    compile group: 'org.battlecode', name: 'battlecode', version: '2017.+'
+    compile group: 'org.battlecode', name: 'battlecode', version: versions.battlecode
 
     // The Battlecode client.
-    client group: 'org.battlecode', name: clientName, version: '2017.+'
+    client group: 'org.battlecode', name: clientName, version: versions.battlecode
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
 
     // Scala!
-    compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
-    compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.7'
-    compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.11.7'
+    compile group: 'org.scala-lang', name: 'scala-library', version: versions.scala
+    compile group: 'org.scala-lang', name: 'scala-compiler', version: versions.scala
+    compile group: 'org.scala-lang', name: 'scala-reflect', version: versions.scala
 }
 
 // Eclipse specific setup to enable docs and sources, and configure layout.
@@ -155,8 +162,9 @@ task listPlayers {
     group 'battlecode'
 
     doLast {
-        (sourceSets.main.allJava + sourceSets.main.allScala).each {
+        sourceSets.main.allSource.each {
             if (it.getName().equals('RobotPlayer.java')
+                || it.getName().equals('RobotPlayer.kt')
                 || it.getName().equals('RobotPlayer.scala')) {
                 URI base = new File(project.projectDir, 'src').toURI()
                 URI full = it.toURI()
@@ -210,14 +218,22 @@ configurations.all {
 
 // We need to download the battlecode plugin before we can run the build script; this does that.
 buildscript {
+    ext.versions = [
+        battlecode: '2017.+',
+        kotlin: '1.0.5-3',
+        scala: '2.11.7'
+    ]
+
     repositories {
         maven {
             url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
         }
+        jcenter()
     }
     dependencies {
         // Load the battlecode plugin onto the classpath.
-        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: '2017.+'
+        classpath group: 'org.battlecode', name: 'battlecode-gradle-plugin', version: versions.battlecode
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
     configurations.all {
         // Check for updates every build.
