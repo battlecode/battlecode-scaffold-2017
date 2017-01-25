@@ -225,3 +225,203 @@ We recommend using the map editor to create maps. The map editor can be ran from
 
 Most contestants choose to write their players in Java, but we also support
 Scala (or a mix of Java and Scala) out of the box, with the standard install.
+
+## Debugging
+Using a "debugger" lets you pause your code while its running and inspect its state - what your variables are set to, what methods you're calling, and so on. You can walk through your code step-by-step, and run arbitrary commands.
+
+Battlecode supports "remote debugging", which means that you start up the battlecode server and tell it to pause, then connect to it with Eclipse or Intellij. It's easy to set up.
+
+### Debugging vocabulary
+Debugging has some new words that you might not know:
+
+A **debugger** is a tool that runs your code and pauses when you tell it to. You'll be using Eclipse or Intellij as a debugger for battlecode (unless you're particularly hardcore.)
+
+A **breakpoint** is an automatic pause point in the code. When the debugger gets to that line of code, it will pause, and wait for you to tell it what to do.
+
+**Stepping** is telling the debugger to take a single "step" in the code, and then pause again.
+
+You can also **resume** code, to keep running until you hit another breakpoint.
+
+The **stack** and **stack frames** are fancy words for, basically, the list of methods that are currently being called. So, if you have the methods:
+
+```
+void doSomething() {
+    goSomewhere();
+}
+
+void goSomewhere() {
+    goLeft();
+}
+
+void goLeft() {
+    rc.move(LEFT);
+}
+```
+
+And you call `doSomething()`, the stack will look like:
+
+```
+   ...
+    ^
+rc.move(LEFT)
+    ^
+goLeft()
+    ^
+goSomewhere()
+    ^
+doSomething() 
+```
+
+If you have questions, ask in IRC.
+
+### Starting the server in debug mode
+Do `./gradlew runDebug -PteamA=examplefuncsplayer -PteamB=examplefuncsplayer -Pmaps=shrine,Barrier` in a terminal. (Or equivalent, for the teams and maps you want.) (This works exactly like `./gradlew run`.)
+
+It should say `Listening for transport dt_socket at address: 5005` and pause.
+
+This means that the server has started, and is waiting for the Eclipse or IntelliJ debugger to connect.
+
+(You have to do this every time you want to debug.)
+
+### Debugging in Intellij
+#### Initial setup
+- Go into IntelliJ
+- Set a breakpoint by clicking on the area beside the line numbers to the left of your code.
+- Right click the breakpoint and select `Suspend / Thread`, and then click "Make default." (This lets battlecode keep working while your code is paused.)
+- Go to Run > Edit Configurations...
+- Hit the "+" icon and select "Remote" 
+    - Give it a name like "Debug Battlecode"
+    - In "Settings":
+        - Set Host to `localhost`
+        - Set Port to `5005`
+    - Hit OK
+- In the top right corner of the screen, you should be able to select "Debug Battlecode" or equivalent from the little dropdown, and then hit the bug icon
+- If it works:
+    - IntelliJ should highlight the line you put a breakpoint on and pause. You should see a "Debug" window at the bottom of the screen.
+      Congratulations! You're debugging.
+- If it doesn't work:
+    - If the match just runs and nothing happens, then make sure that your breakpoint is in a place that will actually run during the match (e.g. at the top of `RobotPlayer::run`.)
+    - If you get `Unable to open debugger port (localhost:5005): java.net.ConnectException "Connection refused"`, make sure you've actually started the server in `runDebug` mode, and that your port is set correctly. (You may also have to mess with your firewall settings, but try the other stuff first.)
+
+#### Ignoring battlecode internals
+Sometimes you can step into battlecode internal stuff by accident. To avoid that:
+- Go into Settings or Preferences > Build, Execution, Deployment > Debugger > Stepping
+- Select the "Skip class loaders" button
+- Select all the "Do not step into the classes..." options
+- Add the following packages by hitting the `+`<sub>.*?</sub>
+    - `battlecode.*`
+    - `net.sf.*`
+    - `gnu.trove.*`
+    - `org.objectweb.*`
+
+#### How to use the debugger
+When the debugger is paused, you should be able to see a "Debug" window. It has the following stuff in it:
+
+- The "Frames" tab, which shows all the methods that have been called to get to where we are. (You can ignore the methods below "run"; they're battlecode magic.)
+- The "Variables" tab, which shows the values of variables that are currently available.
+- A line of icons:
+    - "Step over", which goes to the next line in the current file, ignoring any methods you call.
+    - "Step into", which goes into whatever method you call next.
+    - "Force step into", which does the same thing as Step into, but also shows you inscrutable JVM internals while it goes. You shouldn't need this.
+    - "Step out", which leaves the current method.
+    - "Drop Frame", which pretends to rewind, but doesn't really. Don't use this unless you know what you're doing.
+    - "Run to Cursor", which runs until the code hits the line the cursor is on.
+    - "Evaluate Expression", which lets you put in any code you want and see what its value is.
+- The "Threads" tab, which you shouldn't mess with, because you might break the server.
+
+To learn more about these tools, see the [Intellij documentation](https://www.jetbrains.com/help/idea/2016.3/debugger-basics.html).
+
+#### Conditional breakpoints
+Sometimes, you might only want to pause if your robot is on team A, or the game is in round 537, or if you have fewer than a thousand bytecodes left.
+To make these changes, right click the breakpoint, and in the condition field, put the condition; you can use any variables in the surrounding code.
+If I have the method:
+
+```
+import battlecode.common.Clock;
+import battlecode.common.RobotController;
+
+class RobotPlayer {
+    // ...
+    public static void sayHi(RobotController rc) {
+        rc.broadcast(rc.getID(), rc.getType().ordinal());
+    }
+}
+```
+
+I could make the following breakpoint conditions:
+- `rc.getTeam() == Team.A`
+- `rc.getRoundNum() == 537`
+- `Clock.getBytecodesLeft() < 1000`
+- `rc.getTeam() == Team.A && rc.getRoundNum() == 537 && Clock.getBytecodesLeft() < 1000`
+
+### Debugging in Eclipse
+#### Initial setup
+- Go into Eclipse
+- Set a breakpoint in your code by clicking on the margin to the left of it so that a blue bubble appears
+- Go to Run > Debug configurations 
+- Select "Remote Java Application"
+- Hit the "new" button
+- Set up the debug configuration:
+    - Give it a name (i.e. Debug Battlecode Bot)
+    - Hit Browse, and select your project
+    - Make sure connection type is "Standard"
+    - Set Host to `localhost`
+    - Set Port to `5005`
+    - If there's an error about selecting preferred launcher type at the bottom of the dialog, pick one;
+      scala if you have scala code, java otherwise; although they should both work.
+- Hit "Apply"
+- Hit "Debug"
+    - If it works:
+        - Eclipse should ask to open the "Debug" view; let it.
+        - You should see new and exciting windows, and eclipse should pause and highlight a line of your code.
+        - Congratulations; you're debugging.
+    - If it doesn't:
+        - You may get a "failed to connect to VM; connection refused."
+          Make sure you've [started the server in debug mode](#starting-the-server-in-debug-mode).
+- You can also start debugging by selecting the little triangle next to the beetle in the toolbar and selecting "Debug Battlecode Bot".
+
+#### Ignoring battlecode internals
+Oftentimes while debugging you can often step into classes you don't care about - battlecode internal classes, or java classes.
+To avoid this, right click a stack frame in the "Debug" window - i.e. the thing beneath a Thread labeled `RobotPlayer.run` or whatever - and:
+- Select "Use Step Filters"
+- Select "Edit Step Filters".
+    - Select all the predefined ones
+    - Add filter...
+        - `battlecode.*`
+        - `net.sf.*`
+        - `gnu.trove.*`
+        - `org.objectweb.*`
+    - Hit "Ok"
+
+And you should be good to go!
+
+#### Using the debugger.
+See the [eclipse documentation](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Freference%2Fviews%2Fdebug%2Fref-debug_view.htm).
+
+#### Conditional Breakpoints
+Sometimes, you might only want to pause if your robot is on team A, or the game is in round 537, or if you have fewer than a thousand bytecodes left.
+To make these changes:
+- Right click the breakpoint
+- Go to "Breakpoint Properties"
+- Check "Conditional"
+- Write a condition in the text box
+
+If I have the method:
+
+```
+import battlecode.common.Clock;
+import battlecode.common.RobotController
+
+class RobotPlayer {
+    // ...
+    public static void sayHi(RobotController rc) {
+        rc.broadcast(rc.getID(), rc.getType().ordinal());
+    }
+}
+```
+
+I could make the following conditions:
+- `rc.getTeam() == Team.A`
+- `rc.getRoundNum() == 537`
+- `Clock.getBytecodesLeft() < 1000`
+- `rc.getTeam() == Team.A && rc.getRoundNum() == 537 && Clock.getBytecodesLeft() < 1000`
