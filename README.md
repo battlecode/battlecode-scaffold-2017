@@ -301,7 +301,7 @@ This means that the server has started, and is waiting for the Eclipse or Intell
       Congratulations! You're debugging.
 - If it doesn't work:
     - If the match just runs and nothing happens, then make sure that your breakpoint is in a place that will actually run during the match (e.g. at the top of `RobotPlayer::run`.)
-    - If you get 'Unable to open debugger port (localhost:5005): java.net.ConnectException "Connection refused"', make sure you've actually started the server in runDebug mode, and that your port is set correctly. (You may also have to mess with your firewall settings, but try the other stuff first.)
+    - If you get `Unable to open debugger port (localhost:5005): java.net.ConnectException "Connection refused"`, make sure you've actually started the server in `runDebug` mode, and that your port is set correctly. (You may also have to mess with your firewall settings, but try the other stuff first.)
 
 #### Ignoring battlecode internals
 Sometimes you can step into battlecode internal stuff by accident. To avoid that:
@@ -320,7 +320,6 @@ When the debugger is paused, you should be able to see a "Debug" window. It has 
 - The "Frames" tab, which shows all the methods that have been called to get to where we are. (You can ignore the methods below "run"; they're battlecode magic.)
 - The "Variables" tab, which shows the values of variables that are currently available.
 - A line of icons:
-    - Step over and step into
     - "Step over", which goes to the next line in the current file, ignoring any methods you call.
     - "Step into", which goes into whatever method you call next.
     - "Force step into", which does the same thing as Step into, but also shows you inscrutable JVM internals while it goes. You shouldn't need this.
@@ -355,8 +354,6 @@ I could make the following breakpoint conditions:
 - `Clock.getBytecodesLeft() < 1000`
 - `rc.getTeam() == Team.A && rc.getRoundNum() == 537 && Clock.getBytecodesLeft() < 1000`
 
-And so on.
-
 ### Debugging in Eclipse
 #### Initial setup
 - Go into Eclipse
@@ -383,9 +380,6 @@ And so on.
           Make sure you've [started the server in debug mode](#starting-the-server-in-debug-mode).
 - You can also start debugging by selecting the little triangle next to the beetle in the toolbar and selecting "Debug Battlecode Bot".
 
-#### What to look at
-Wow, there's all this new information! What does it all mean?
-
 #### Ignoring battlecode internals
 Oftentimes while debugging you can often step into classes you don't care about - battlecode internal classes, or java classes.
 To avoid this, right click a stack frame in the "Debug" window - i.e. the thing beneath a Thread labeled `RobotPlayer.run` or whatever - and:
@@ -401,8 +395,8 @@ To avoid this, right click a stack frame in the "Debug" window - i.e. the thing 
 
 And you should be good to go!
 
-#### Moving around
-There should be a little line of buttons at the top of eclipse. 
+#### Using the debugger.
+See the [eclipse documentation](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Freference%2Fviews%2Fdebug%2Fref-debug_view.htm).
 
 #### Conditional Breakpoints
 Sometimes, you might only want to pause if your robot is on team A, or the game is in round 537, or if you have fewer than a thousand bytecodes left.
@@ -416,7 +410,7 @@ If I have the method:
 
 ```
 import battlecode.common.Clock;
-import battlecode.common.RobotController;
+import battlecode.common.RobotController
 
 class RobotPlayer {
     // ...
@@ -431,6 +425,3 @@ I could make the following conditions:
 - `rc.getRoundNum() == 537`
 - `Clock.getBytecodesLeft() < 1000`
 - `rc.getTeam() == Team.A && rc.getRoundNum() == 537 && Clock.getBytecodesLeft() < 1000`
-
-And so on.
-
