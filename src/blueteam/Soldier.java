@@ -1,7 +1,6 @@
 package blueteam;
 
 import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 
@@ -14,7 +13,6 @@ public class Soldier extends Robot {
 	@Override
 	void step() throws GameActionException {
 		// TODO Tom
-		MapLocation myLocation = rc.getLocation();
 
 		// See if there are any nearby enemy robots
 		RobotInfo[] robots = rc.senseNearbyRobots(-1, enemy);

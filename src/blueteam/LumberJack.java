@@ -19,8 +19,8 @@ public class LumberJack extends Robot {
 		// TODO Tom
 		// See if there are any enemy robots within striking range
 		// (distance 1 from lumberjack's radius)
-		RobotInfo[] robots = rc.senseNearbyRobots(
-				RobotType.LUMBERJACK.bodyRadius + GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
+		RobotInfo[] robots = rc
+				.senseNearbyRobots(RobotType.LUMBERJACK.bodyRadius + GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
 
 		if (robots.length > 0 && !rc.hasAttacked()) {
 			// Use strike() to hit all nearby robots!
