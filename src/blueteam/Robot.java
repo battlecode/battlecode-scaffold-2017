@@ -1,5 +1,7 @@
 package blueteam;
 
+import java.util.Arrays;
+
 import battlecode.common.BulletInfo;
 import battlecode.common.Clock;
 import battlecode.common.Direction;
@@ -19,6 +21,7 @@ abstract public class Robot {
 
 	void run() throws GameActionException {
 		while (true) {
+			dodge();
 			step();
 			Clock.yield();
 		}
@@ -44,7 +47,7 @@ abstract public class Robot {
 	 * @return true if a move was performed
 	 * @throws GameActionException
 	 */
-	boolean tryMove(Direction dir) throws GameActionException {
+	boolean tryMove(Direction dir) {
 		return tryMove(dir, 20, 3);
 	}
 
@@ -62,34 +65,38 @@ abstract public class Robot {
 	 * @return true if a move was performed
 	 * @throws GameActionException
 	 */
-	boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) throws GameActionException {
-
-		// First, try intended direction
-		if (rc.canMove(dir)) {
-			rc.move(dir);
-			return true;
-		}
-
-		// Now try a bunch of similar angles
-		int currentCheck = 1;
-
-		while (currentCheck <= checksPerSide) {
-			// Try the offset of the left side
-			if (rc.canMove(dir.rotateLeftDegrees(degreeOffset * currentCheck))) {
-				rc.move(dir.rotateLeftDegrees(degreeOffset * currentCheck));
+	boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) {
+		try {
+			// First, try intended direction
+			if (rc.canMove(dir)) {
+				rc.move(dir);
 				return true;
 			}
-			// Try the offset on the right side
-			if (rc.canMove(dir.rotateRightDegrees(degreeOffset * currentCheck))) {
-				rc.move(dir.rotateRightDegrees(degreeOffset * currentCheck));
-				return true;
-			}
-			// No move performed, try slightly further
-			currentCheck++;
-		}
 
-		// A move never happened, so return false.
-		return false;
+			// Now try a bunch of similar angles
+			int currentCheck = 1;
+
+			while (currentCheck <= checksPerSide) {
+				// Try the offset of the left side
+				if (rc.canMove(dir.rotateLeftDegrees(degreeOffset * currentCheck))) {
+					rc.move(dir.rotateLeftDegrees(degreeOffset * currentCheck));
+					return true;
+				}
+				// Try the offset on the right side
+				if (rc.canMove(dir.rotateRightDegrees(degreeOffset * currentCheck))) {
+					rc.move(dir.rotateRightDegrees(degreeOffset * currentCheck));
+					return true;
+				}
+				// No move performed, try slightly further
+				currentCheck++;
+			}
+
+			// A move never happened, so return false.
+			return false;
+		} catch (GameActionException e) {
+			// this can't actually happen since we always ask canMove first
+			return false;
+		}
 	}
 
 	/**
@@ -130,5 +137,30 @@ abstract public class Robot {
 		float perpendicularDist = (float) Math.abs(distToRobot * Math.sin(theta));
 
 		return (perpendicularDist <= rc.getType().bodyRadius);
+	}
+
+	/**
+	 * Try to move in direction perpendicular to bullet trajectory
+	 *
+	 * @param bullet
+	 * @return true if move succeeded
+	 */
+	boolean trySidestep(BulletInfo bullet) {
+		Direction towards = bullet.getDir();
+		return (tryMove(towards.rotateRightDegrees(90)) || tryMove(towards.rotateLeftDegrees(90)));
+	}
+
+	/**
+	 * Try to dodge all bullets in range.
+	 */
+	void dodge() {
+		BulletInfo[] bullets = rc.senseNearbyBullets();
+		Arrays.stream(bullets).filter(x -> willCollideWithMe(x)).forEach(x -> trySidestep(x));
+		for (BulletInfo bi : bullets) {
+			if (willCollideWithMe(bi)) {
+				trySidestep(bi);
+			}
+		}
+
 	}
 }
