@@ -41,12 +41,7 @@ public class Gardener extends Robot {
                 dir = dir.rotateLeftDegrees((float)Math.random()*60 - 30);
                 // black dot in debugging
                 rc.setIndicatorDot(rc.getLocation().add(dir),1,1,1);
-
-                try {
-                    tryMove(dir);
-                } catch (GameActionException e) {
-
-                }
+                tryMove(dir);
                 return false;
             }
         }
@@ -147,11 +142,7 @@ public class Gardener extends Robot {
                     System.out.println("Gardener ID: "+ rc.getID() +" found place to build garden");
                 }
                 else {
-                    try{
                         tryMove(randomDirection());
-                    }
-                    catch (GameActionException e)
-                    {}
                 }
                 break;
             case BUILDING:
