@@ -2,6 +2,7 @@ package blueteam;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
+import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 
@@ -31,6 +32,11 @@ public class Archon extends Robot {
 			rc.broadcast(TeamConstants.GARDENERS_COUNT_CHANNEL, numOfGardeners + 1);
 		}
 
+		// donate all bullets if we can win immediately
+		if (rc.getTeamBullets() / rc.getVictoryPointCost()
+				+ rc.getTeamVictoryPoints() >= GameConstants.VICTORY_POINTS_TO_WIN) {
+			rc.donate(rc.getTeamBullets());
+		}
 		// buy some victory points randomly
 		if (Math.random() < 0.05) {
 			rc.donate(rc.getTeamBullets() / 4);
