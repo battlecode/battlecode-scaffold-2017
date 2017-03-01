@@ -7,8 +7,6 @@ import battlecode.common.RobotInfo;
 
 public class Archon extends Robot {
 
-	private final int desiredNumberOfGardeners = 10;
-
 	Archon(RobotController rc) {
 		super(rc);
 	}
@@ -26,10 +24,11 @@ public class Archon extends Robot {
 
 		// randomly attempt to build a gardener if we need more
 		Direction dir = randomDirection();
-		int numOfGardeners = rc.readBroadcast(0);
-		if (numOfGardeners < desiredNumberOfGardeners && rc.canHireGardener(dir) && Math.random() < 0.5) {
+		int numOfGardeners = rc.readBroadcast(TeamConstants.GARDENERS_COUNT_CHANNEL);
+		if (numOfGardeners < TeamConstants.DESIRED_NUMBER_OF_GARDENERS && rc.canHireGardener(dir)
+				&& Math.random() < 0.5) {
 			rc.hireGardener(dir);
-			rc.broadcast(0, numOfGardeners + 1);
+			rc.broadcast(TeamConstants.GARDENERS_COUNT_CHANNEL, numOfGardeners + 1);
 		}
 
 		// buy some victory points randomly
