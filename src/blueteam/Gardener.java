@@ -45,7 +45,7 @@ public class Gardener extends Robot {
                 try {
                     tryMove(dir);
                 } catch (GameActionException e) {
-                    
+
                 }
                 return false;
             }
@@ -58,7 +58,7 @@ public class Gardener extends Robot {
      * but should be changed if building tanks (as they take 2 radius)
      * @return
      */
-    boolean findSpot() throws GameActionException {
+    boolean findSpot(){
         return findSpot(6.0f);
     }
 
@@ -136,7 +136,7 @@ public class Gardener extends Robot {
         }
     }
 	@Override
-	void step() throws GameActionException {
+	void step(){
 		// TODO Lukas
 
 		switch (state)
@@ -147,7 +147,11 @@ public class Gardener extends Robot {
                     System.out.println("Gardener ID: "+ rc.getID() +" found place to build garden");
                 }
                 else {
-                    tryMove(randomDirection());
+                    try{
+                        tryMove(randomDirection());
+                    }
+                    catch (GameActionException e)
+                    {}
                 }
                 break;
             case BUILDING:
