@@ -8,8 +8,11 @@ import battlecode.common.RobotInfo;
 
 public class Archon extends Robot {
 
+	int numberOfArchons;
+
 	Archon(RobotController rc) {
 		super(rc);
+		numberOfArchons = rc.getInitialArchonLocations(rc.getTeam()).length;
 	}
 
 	@Override
@@ -38,7 +41,7 @@ public class Archon extends Robot {
 			rc.donate(rc.getTeamBullets());
 		}
 		// buy some victory points randomly
-		if (Math.random() < 0.05) {
+		if (Math.random() < 0.05 / numberOfArchons) {
 			rc.donate(rc.getTeamBullets() / 4);
 		}
 	}
