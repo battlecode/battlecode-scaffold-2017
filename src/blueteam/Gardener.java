@@ -41,7 +41,12 @@ public class Gardener extends Robot {
                 dir = dir.rotateLeftDegrees((float)Math.random()*60 - 30);
                 // black dot in debugging
                 rc.setIndicatorDot(rc.getLocation().add(dir),1,1,1);
-                tryMove(dir);
+
+                try {
+                    tryMove(dir);
+                } catch (GameActionException e) {
+                    
+                }
                 return false;
             }
         }
