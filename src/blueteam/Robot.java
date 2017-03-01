@@ -1,24 +1,34 @@
 package blueteam;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Random;
+
 import battlecode.common.BulletInfo;
 import battlecode.common.Clock;
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 
 abstract public class Robot {
 	RobotController rc;
 	Team enemy;
+	Random rand;
 
 	Robot(RobotController rc) {
 		this.rc = rc;
 		enemy = rc.getTeam().opponent();
+		rand = new Random();
 	}
 
 	void run() throws GameActionException {
 		while (true) {
+			dodge();
 			step();
 			Clock.yield();
 		}
@@ -28,7 +38,7 @@ abstract public class Robot {
 
 	/**
 	 * Returns a random Direction
-	 * 
+	 *
 	 * @return a random Direction
 	 */
 	Direction randomDirection() {
@@ -44,7 +54,7 @@ abstract public class Robot {
 	 * @return true if a move was performed
 	 * @throws GameActionException
 	 */
-	boolean tryMove(Direction dir) throws GameActionException {
+	boolean tryMove(Direction dir) {
 		return tryMove(dir, 20, 3);
 	}
 
@@ -62,34 +72,38 @@ abstract public class Robot {
 	 * @return true if a move was performed
 	 * @throws GameActionException
 	 */
-	boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) throws GameActionException {
-
-		// First, try intended direction
-		if (rc.canMove(dir)) {
-			rc.move(dir);
-			return true;
-		}
-
-		// Now try a bunch of similar angles
-		int currentCheck = 1;
-
-		while (currentCheck <= checksPerSide) {
-			// Try the offset of the left side
-			if (rc.canMove(dir.rotateLeftDegrees(degreeOffset * currentCheck))) {
-				rc.move(dir.rotateLeftDegrees(degreeOffset * currentCheck));
+	boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) {
+		try {
+			// First, try intended direction
+			if (rc.canMove(dir)) {
+				rc.move(dir);
 				return true;
 			}
-			// Try the offset on the right side
-			if (rc.canMove(dir.rotateRightDegrees(degreeOffset * currentCheck))) {
-				rc.move(dir.rotateRightDegrees(degreeOffset * currentCheck));
-				return true;
-			}
-			// No move performed, try slightly further
-			currentCheck++;
-		}
 
-		// A move never happened, so return false.
-		return false;
+			// Now try a bunch of similar angles
+			int currentCheck = 1;
+
+			while (currentCheck <= checksPerSide) {
+				// Try the offset of the left side
+				if (rc.canMove(dir.rotateLeftDegrees(degreeOffset * currentCheck))) {
+					rc.move(dir.rotateLeftDegrees(degreeOffset * currentCheck));
+					return true;
+				}
+				// Try the offset on the right side
+				if (rc.canMove(dir.rotateRightDegrees(degreeOffset * currentCheck))) {
+					rc.move(dir.rotateRightDegrees(degreeOffset * currentCheck));
+					return true;
+				}
+				// No move performed, try slightly further
+				currentCheck++;
+			}
+
+			// A move never happened, so return false.
+			return false;
+		} catch (GameActionException e) {
+			// this can't actually happen since we always ask canMove first
+			return false;
+		}
 	}
 
 	/**
@@ -130,5 +144,43 @@ abstract public class Robot {
 		float perpendicularDist = (float) Math.abs(distToRobot * Math.sin(theta));
 
 		return (perpendicularDist <= rc.getType().bodyRadius);
+	}
+
+	/**
+	 * Try to move in direction perpendicular to bullet trajectory
+	 *
+	 * @param bullet
+	 * @return true if move succeeded
+	 */
+	boolean trySidestep(BulletInfo bullet) {
+		Direction towards = bullet.getDir();
+		return (tryMove(towards.rotateRightDegrees(90)) || tryMove(towards.rotateLeftDegrees(90)));
+	}
+
+	/**
+	 * Try to dodge all bullets in range.
+	 */
+	void dodge() {
+		BulletInfo[] bullets = rc.senseNearbyBullets();
+		Arrays.stream(bullets).filter(x -> willCollideWithMe(x)).forEach(x -> trySidestep(x));
+	}
+
+	ArrayList<RobotInfo> filterByType(RobotInfo[] robots, RobotType type) {
+		ArrayList<RobotInfo> res = new ArrayList<>();
+		for (RobotInfo robot : robots) {
+			if (robot.getType() == type)
+				res.add(robot);
+		}
+		return res;
+	}
+
+	Optional<RobotInfo> getNearestRobot(RobotType type, float maxRadius) {
+		RobotInfo[] close_enemies = rc.senseNearbyRobots(maxRadius, enemy);
+		ArrayList<RobotInfo> robots = filterByType(close_enemies, type);
+		if (robots.size() > 0) {
+			rc.setIndicatorDot(robots.get(0).getLocation(), 0, 250, 0);
+			return Optional.of(robots.get(0));
+		}
+		return Optional.empty();
 	}
 }
