@@ -156,11 +156,5 @@ abstract public class Robot {
 	void dodge() {
 		BulletInfo[] bullets = rc.senseNearbyBullets();
 		Arrays.stream(bullets).filter(x -> willCollideWithMe(x)).forEach(x -> trySidestep(x));
-		for (BulletInfo bi : bullets) {
-			if (willCollideWithMe(bi)) {
-				trySidestep(bi);
-			}
-		}
-
 	}
 }
