@@ -1,6 +1,9 @@
 package blueteam;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.Random;
 
 import battlecode.common.BulletInfo;
 import battlecode.common.Clock;
@@ -8,15 +11,19 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 
 abstract public class Robot {
 	RobotController rc;
 	Team enemy;
+	Random rand;
 
 	Robot(RobotController rc) {
 		this.rc = rc;
 		enemy = rc.getTeam().opponent();
+		rand = new Random();
 	}
 
 	void run() throws GameActionException {
@@ -31,7 +38,7 @@ abstract public class Robot {
 
 	/**
 	 * Returns a random Direction
-	 * 
+	 *
 	 * @return a random Direction
 	 */
 	Direction randomDirection() {
@@ -156,5 +163,24 @@ abstract public class Robot {
 	void dodge() {
 		BulletInfo[] bullets = rc.senseNearbyBullets();
 		Arrays.stream(bullets).filter(x -> willCollideWithMe(x)).forEach(x -> trySidestep(x));
+	}
+
+	ArrayList<RobotInfo> filterByType(RobotInfo[] robots, RobotType type) {
+		ArrayList<RobotInfo> res = new ArrayList<>();
+		for (RobotInfo robot : robots) {
+			if (robot.getType() == type)
+				res.add(robot);
+		}
+		return res;
+	}
+
+	Optional<RobotInfo> getNearestRobot(RobotType type, float maxRadius) {
+		RobotInfo[] close_enemies = rc.senseNearbyRobots(maxRadius, enemy);
+		ArrayList<RobotInfo> robots = filterByType(close_enemies, type);
+		if (robots.size() > 0) {
+			rc.setIndicatorDot(robots.get(0).getLocation(), 0, 250, 0);
+			return Optional.of(robots.get(0));
+		}
+		return Optional.empty();
 	}
 }
