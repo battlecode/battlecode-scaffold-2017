@@ -226,7 +226,7 @@ buildscript {
 
     repositories {
         maven {
-            url "http://battlecode-maven-test-aaarblgarbl.s3-website-us-east-1.amazonaws.com/"
+            url "http://battlecode-maven.s3-website-us-east-1.amazonaws.com/"
         }
         jcenter()
     }
